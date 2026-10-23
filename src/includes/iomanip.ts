@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 import { CRuntime, IntVariable, Variable } from "../rt";
 import { IomanipOperator, IomanipConfig, Cout } from "./shared/iomanip_types";
+import formatFloat = require("./shared/format_float");
 
 export = {
     load(rt: CRuntime) {
@@ -71,7 +72,9 @@ export = {
                                     6;
                                 tarStr = o.v.toFixed(prec);
                             } else if (this.active.setprecision != null) {
-                                tarStr = o.v.toPrecision(this.config.setprecision).replace(/0+$/, "");
+                                tarStr = formatFloat(o.v, this.config.setprecision);
+                            } else {
+                                tarStr = formatFloat(o.v);
                             }
                         }
                         if (this.active.setw != null) {

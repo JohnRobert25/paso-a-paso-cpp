@@ -1,4 +1,4 @@
-import { ArrayType, CRuntime, Variable, VariableType } from "./rt";
+import { ArrayType, CIntType, CRuntime, Variable, VariableType } from "./rt";
 
 /*
  * decaffeinate suggestions:
@@ -38,8 +38,25 @@ function isIterable(obj: any) {
     return typeof obj[Symbol.iterator] === 'function';
 }
 
+// Type of an integer literal as in C++: the first of int, unsigned int (only for
+// hex/octal/binary or a "u" suffix), long long, unsigned long long that holds it.
+// "l"/"ll" suffixes skip to long long (long is 32 bits here).
+function integerConstant(rt: CRuntime, digits: string, radix: 10 | 16 | 8 | 2, suffix: string) {
+    const value = parseInt(digits, radix);
+    rt.checkExactInteger(value, () => BigInt({ 10: "", 16: "0x", 8: "0o", 2: "0b" }[radix] + digits));
+    const decimal = radix === 10;
+    const unsigned = suffix.includes("u");
+    const candidates: CIntType[] = suffix.includes("l") ? [] : ["int", "unsigned int"];
+    candidates.push("long long", "unsigned long long");
+    const typeName = candidates.find((name) =>
+        (name.startsWith("unsigned") ? (unsigned || !decimal) : !unsigned)
+        && value <= rt.config.limits[name].max
+    ) || "unsigned long long";
+    return rt.val(rt.primitiveType(typeName), value);
+}
+
 export class Interpreter extends BaseInterpreter {
-    visitors: { [name: string]: (interp: Interpreter, s: any, param?: any) => any };
+    visitors:{ [name: string]: (interp: Interpreter, s: any, param?: any) => any };
     constructor(rt: CRuntime) {
         super(rt);
         this.visitors = {
@@ -939,19 +956,19 @@ export class Interpreter extends BaseInterpreter {
                 ({
                     rt
                 } = interp);
-                return rt.val(rt.unsignedintTypeLiteral, parseInt(s.value, 10));
+                return integerConstant(rt, s.value, 10, s.suffix);
             },
             HexConstant(interp, s, param) {
                 ({
                     rt
                 } = interp);
-                return rt.val(rt.unsignedintTypeLiteral, parseInt(s.value, 16));
+                return integerConstant(rt, s.value, 16, s.suffix);
             },
             BinaryConstant(interp, s, param) {
                 ({
                     rt
                 } = interp);
-                return rt.val(rt.unsignedintTypeLiteral, parseInt(s.value, 2));
+                return integerConstant(rt, s.value, 2, s.suffix);
             },
             DecimalFloatConstant(interp, s, param) {
                 ({
@@ -969,7 +986,7 @@ export class Interpreter extends BaseInterpreter {
                 ({
                     rt
                 } = interp);
-                return rt.val(rt.unsignedintTypeLiteral, parseInt(s.value, 8));
+                return integerConstant(rt, s.value, 8, s.suffix);
             },
             NamespaceDefinition(interp, s, param) {
                 ({

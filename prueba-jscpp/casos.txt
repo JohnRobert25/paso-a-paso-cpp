@@ -506,3 +506,78 @@ int main() {
     cout << u << "\n";
     return 0;
 }
+=== 40_division_negativos | 1
+#include <iostream>
+using namespace std;
+int main() {
+    int a = -7, b = 2;
+    cout << a / b << " " << a % b << " " << 7 / -2 << " " << -7 / -2 << "\n";
+    a /= 2;
+    cout << a << "\n";
+    long long x = -1000000000000LL / 7;
+    cout << x << "\n";
+    return 0;
+}
+=== 41_double_formato | 1
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main() {
+    double v[] = {0.1 + 0.2, 1.0 / 3, 100000000.0, 123456.0, 1234567.0, 0.0001, 0.00001234, -2.5, 5, 9.9999999, 1e-10, 0.5, 2.0 / 3 * 3};
+    for (int i = 0; i < 13; i++) cout << v[i] << " ";
+    cout << "\n";
+    cout << setprecision(3) << 3.14159 << " " << 100.0 << " " << 1234.5 << "\n";
+    cout << setprecision(10) << 1.0 / 7 << "\n";
+    cout << fixed << setprecision(3) << 2.0 / 3 << " " << 5.0 << "\n";
+    return 0;
+}
+=== 42_globales_en_cero | 2
+#include <iostream>
+using namespace std;
+int cuenta[10];
+int total;
+long long suma;
+double promedio;
+bool visto[5];
+int m[3][3];
+int main() {
+    int x;
+    while (cin >> x) { cuenta[x]++; total++; suma += x; }
+    promedio = (double)suma / total;
+    cout << cuenta[3] << " " << cuenta[0] << " " << total << " " << suma << " " << promedio << " " << visto[2] << " " << m[1][2] << "\n";
+    return 0;
+}
+--- in
+3 1 3 5 3
+=== 43_constantes_y_tipos | 1
+#include <iostream>
+using namespace std;
+int main() {
+    int x = -5;
+    char c = 'A';
+    long long big = 3000000000;
+    cout << -x << " " << -c << " " << c + 1 << " " << big * 2 << "\n";
+    cout << 0x10 << " " << 017 << " " << 0b101 << " " << 10U << " " << 5LL * 3 << "\n";
+    long long m = 1LL << 40;
+    cout << m << " " << (1 << 20) << " " << 2147483647LL + 1 << "\n";
+    unsigned int u = 7;
+    cout << u * 2 << " " << u / 2 << " " << -1000000000LL * 3 << "\n";
+    int a = 7, b = -3;
+    cout << a / b << " " << a % b << " " << -a / 2 << "\n";
+    return 0;
+}
+=== 44_bits | despues
+#include <iostream>
+using namespace std;
+int main() {
+    long long mask = (1LL << 40) | 5;
+    cout << mask << " " << (mask & (1LL << 40)) << " " << (mask ^ 1) << " " << (mask >> 38) << "\n";
+    int x = 12, y = 10;
+    cout << (x & y) << " " << (x | y) << " " << (x ^ y) << " " << (~x) << " " << (x << 3) << " " << (x >> 2) << "\n";
+    cout << (-12 >> 1) << " " << (-12 & 7) << " " << (-1 ^ 5) << " " << (~0LL) << "\n";
+    unsigned int u = 5;
+    cout << (~u) << " " << (u << 3) << "\n";
+    for (int s = 0; s < (1 << 3); s++) cout << ((s >> 1) & 1);
+    cout << "\n";
+    return 0;
+}

@@ -669,29 +669,21 @@ export class CRuntime {
                 }
                 return l;
             } else if (this.isIntegerType(l) && this.isIntegerType(r)) {
-                let rett;
+                // usual arithmetic conversions: same rank -> unsigned wins;
+                // otherwise the higher rank, made unsigned if it cannot hold every value of the other
                 const slt = this.getSignedType(l);
                 const srt = this.getSignedType(r);
+                const unsignedOf = (t: PrimitiveType) => this.primitiveType(("unsigned " + t.name) as CBasicType);
                 if (this.isTypeEqualTo(slt, srt)) {
-                    rett = slt;
-                } else {
-                    const slti = this.numericTypeOrder.indexOf(slt.name);
-                    const srti = this.numericTypeOrder.indexOf(srt.name);
-                    if (slti <= srti) {
-                        if (this.isUnsignedType(l) && this.isUnsignedType(r)) {
-                            rett = r;
-                        } else {
-                            rett = srt;
-                        }
-                    } else {
-                        if (this.isUnsignedType(l) && this.isUnsignedType(r)) {
-                            rett = l;
-                        } else {
-                            rett = slt;
-                        }
-                    }
+                    return (this.isUnsignedType(l) || this.isUnsignedType(r)) ? unsignedOf(slt) : slt;
                 }
-                return rett;
+                const [high, low]: IntType[] = this.numericTypeOrder.indexOf(slt.name) > this.numericTypeOrder.indexOf(srt.name) ? [l, r] : [r, l];
+                const highUnsigned = this.isUnsignedType(high);
+                const lowUnsigned = this.isUnsignedType(low);
+                if (highUnsigned || !lowUnsigned) {
+                    return high;
+                }
+                return this.config.limits[high.name].max >= this.config.limits[low.name].max ? high : unsignedOf(high);
             } else if (!this.isIntegerType(l) && this.isIntegerType(r)) {
                 return l;
             } else if (this.isIntegerType(l) && !this.isIntegerType(r)) {
@@ -774,11 +766,19 @@ export class CRuntime {
         }
     };
 
+    // Integers are JS numbers, exact only up to 2^53. Past that, compare with the
+    // exact BigInt result and stop rather than continue with a wrong value.
+    checkExactInteger(value: number, exact: () => bigint) {
+        if (Number.isFinite(value) && !Number.isSafeInteger(value) && BigInt(value) !== exact()) {
+            this.raiseException(`the exact result ${exact()} is too large for this interpreter (over 2^53)`);
+        }
+    }
+
     ensureUnsigned(type: VariableType, value: BasicValue) {
         value = this.booleanToNumber(value);
         if (this.isUnsignedType(type)) {
             const limit = this.config.limits[type.name];
-            const period = limit.max - limit.min;
+            const period = limit.max - limit.min + 1;
             if (value < limit.min) {
                 value += period * Math.ceil((limit.min - value) / period);
             }
@@ -906,7 +906,9 @@ export class CRuntime {
                         this.raiseException("cannot cast " + this.makeValueString(value) + " to " + this.makeTypeString(type));
                     } else if (value.v < 0) {
                         const { bytes } = this.config.limits[type.name];
-                        let newValue = this.booleanToNumber(value.v) & ((1 << (8 * bytes)) - 1); // truncates
+                        // modulo 2^bits, as C++ defines it (-1 -> 4294967295); `1 << 32` is 1 in JS
+                        const period = Math.pow(2, 8 * bytes);
+                        let newValue = ((this.booleanToNumber(value.v) % period) + period) % period;
                         if (this.inrange(type, newValue, `cannot cast negative value ${newValue} to ` + this.makeTypeString(type))) {
                             newValue = this.ensureUnsigned(type, newValue);
                             // unsafe! bitwise truncation is platform dependent
@@ -1451,7 +1453,9 @@ export class CRuntime {
 
     defaultValue(type: VariableType, left = false): Variable {
         if (type.type === "primitive") {
-            return this.val(type, NaN, left, true);
+            // C++ zero-initializes globals; locals stay uninitialized (NaN)
+            const inGlobalScope = this.scope.length === 1;
+            return this.val(type, inGlobalScope ? 0 : NaN, left, true);
         } else if (type.type === "class") {
             const ret = this.val(type, {
                 members: {}

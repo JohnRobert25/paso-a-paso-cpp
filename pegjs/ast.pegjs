@@ -780,7 +780,7 @@ IntegerConstant
       / HexConstant
       / OctalConstant
       )
-    IntegerSuffix? Spacing {return a;}
+    s:$(IntegerSuffix?) Spacing {a.suffix = s.toLowerCase(); return a;}
     ;
 
 DecimalConstant = a:[1-9] b:[0-9]* {return addPositionInfo({type:'DecimalConstant', value:a + b.join("")});};

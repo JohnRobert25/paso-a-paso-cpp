@@ -1,5 +1,5 @@
 import _ = require("lodash");
-import { CCharType, CFloatType, CIntType, JSCPPConfig, Variable, OpHandlerMap, ArrayElementVariable } from "./rt";
+import { BasicValue, CCharType, CFloatType, CIntType, CRuntime, JSCPPConfig, Variable, VariableType, OpHandlerMap, ArrayElementVariable } from "./rt";
 
 const config: JSCPPConfig = {
     specifiers: ["const", "inline", "_stdcall", "extern", "static", "auto", "register"],
@@ -167,6 +167,24 @@ export const numericTypeOrder: (CCharType | CIntType | CFloatType)[] = [
     "double"
 ];
 
+// JS bitwise operators truncate to 32 bits; apply them to the high and low
+// 32-bit halves so long long keeps its upper bits (1LL << 40 & mask)
+const TWO_32 = 0x100000000;
+function bitwise64(a: number, b: number, op: (x: number, y: number) => number) {
+    const hiA = Math.floor(a / TWO_32);
+    const hiB = Math.floor(b / TWO_32);
+    const lo = op(a - hiA * TWO_32, b - hiB * TWO_32) >>> 0;
+    const hi = op(hiA, hiB) | 0;
+    return hi * TWO_32 + lo;
+}
+
+// Integer results past 2^53 may have lost digits: check them against BigInt
+function checkExact(rt: CRuntime, rett: VariableType, ret: number, a: number, b: number, op: (x: bigint, y: bigint) => bigint) {
+    if (rt.isIntegerType(rett)) {
+        rt.checkExactInteger(ret, () => op(BigInt(a), BigInt(b)));
+    }
+}
+
 const defaultOpHandler: OpHandlerMap = {
     handlers: {
         "o(*)": {
@@ -178,6 +196,7 @@ const defaultOpHandler: OpHandlerMap = {
                 } else {
                     const ret = rt.booleanToNumber(l.v) * rt.booleanToNumber(r.v);
                     const rett = rt.promoteNumeric(l.t, r.t);
+                    checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x * y);
                     return rt.val(rett, ret);
                 }
             }
@@ -191,9 +210,11 @@ const defaultOpHandler: OpHandlerMap = {
                 } else {
                     let ret = rt.booleanToNumber(l.v) / rt.booleanToNumber(r.v);
                     if (rt.isIntegerType(l.t) && rt.isIntegerType(r.t)) {
-                        ret = Math.floor(ret);
+                        // C++ truncates toward zero: -7 / 2 == -3
+                        ret = Math.trunc(ret);
                     }
                     const rett = rt.promoteNumeric(l.t, r.t);
+                    checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x / y);
                     return rt.val(rett, ret);
                 }
             }
@@ -223,6 +244,7 @@ const defaultOpHandler: OpHandlerMap = {
                     } else {
                         const ret = rt.booleanToNumber(l.v) + rt.booleanToNumber(r.v);
                         const rett = rt.promoteNumeric(l.t, r.t);
+                        checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x + y);
                         return rt.val(rett, ret);
                     }
                 }
@@ -232,9 +254,9 @@ const defaultOpHandler: OpHandlerMap = {
             default(rt, l, r) {
                 let rett;
                 if (r === undefined) {
-                    // unary
-                    rett = l.v > 0 ? rt.getSignedType(l.t) : l.t;
-                    return rt.val(rett, -l.v);
+                    // unary: integer promotion, and unsigned negation wraps (-0x80000000u == 2147483648)
+                    rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
+                    return rt.val(rett, rt.ensureUnsigned(rett, -rt.booleanToNumber(l.v as BasicValue)));
                 } else {
                     // binary
                     if (!rt.isNumericType(l) || !rt.isNumericType(r)) {
@@ -242,6 +264,7 @@ const defaultOpHandler: OpHandlerMap = {
                     } else {
                         const ret = rt.booleanToNumber(l.v) - rt.booleanToNumber(r.v);
                         rett = rt.promoteNumeric(l.t, r.t);
+                        checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x - y);
                         return rt.val(rett, ret);
                     }
                 }
@@ -252,8 +275,8 @@ const defaultOpHandler: OpHandlerMap = {
                 if (!rt.isNumericType(r) || !rt.isIntegerType(l) || !rt.isIntegerType(r)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support << on " + rt.makeTypeString(r.t));
                 } else {
-                    const ret = rt.booleanToNumber(l.v) << rt.booleanToNumber(r.v);
-                    const rett = l.t;
+                    const ret = rt.booleanToNumber(l.v) * Math.pow(2, rt.booleanToNumber(r.v));
+                    const rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
                     return rt.val(rett, ret);
                 }
             }
@@ -263,8 +286,8 @@ const defaultOpHandler: OpHandlerMap = {
                 if (!rt.isNumericType(r) || !rt.isIntegerType(l) || !rt.isIntegerType(r)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support >> on " + rt.makeTypeString(r.t));
                 } else {
-                    const ret = rt.booleanToNumber(l.v) >> rt.booleanToNumber(r.v);
-                    const rett = l.t;
+                    const ret = Math.floor(rt.booleanToNumber(l.v) / Math.pow(2, rt.booleanToNumber(r.v)));
+                    const rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
                     return rt.val(rett, ret);
                 }
             }
@@ -349,7 +372,7 @@ const defaultOpHandler: OpHandlerMap = {
                     if (!rt.isIntegerType(l) || !rt.isNumericType(r) || !rt.isIntegerType(r)) {
                         rt.raiseException(rt.makeTypeString(l.t) + " does not support & on " + rt.makeTypeString(r.t));
                     } else {
-                        const ret = rt.booleanToNumber(l.v) & rt.booleanToNumber(r.v);
+                        const ret = bitwise64(rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x & y);
                         const rett = rt.promoteNumeric(l.t, r.t);
                         return rt.val(rett, ret);
                     }
@@ -361,7 +384,7 @@ const defaultOpHandler: OpHandlerMap = {
                 if (!rt.isNumericType(r) || !rt.isIntegerType(l) || !rt.isIntegerType(r)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support ^ on " + rt.makeTypeString(r.t));
                 } else {
-                    const ret = rt.booleanToNumber(l.v) ^ rt.booleanToNumber(r.v);
+                    const ret = bitwise64(rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x ^ y);
                     const rett = rt.promoteNumeric(l.t, r.t);
                     return rt.val(rett, ret);
                 }
@@ -372,7 +395,7 @@ const defaultOpHandler: OpHandlerMap = {
                 if (!rt.isNumericType(r) || !rt.isIntegerType(l) || !rt.isIntegerType(r)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support | on " + rt.makeTypeString(r.t));
                 } else {
-                    const ret = rt.booleanToNumber(l.v) | rt.booleanToNumber(r.v);
+                    const ret = bitwise64(rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x | y);
                     const rett = rt.promoteNumeric(l.t, r.t);
                     return rt.val(rett, ret);
                 }
@@ -504,8 +527,9 @@ const defaultOpHandler: OpHandlerMap = {
                 if (!rt.isIntegerType(l.t)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support ~ on itself");
                 }
-                const ret = ~l.v;
+                // ~x == -x - 1 in two's complement, without JS's 32-bit truncation
                 const rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
+                const ret = rt.ensureUnsigned(rett, -rt.booleanToNumber(l.v as BasicValue) - 1);
                 return rt.val(rett, ret);
             }
         },

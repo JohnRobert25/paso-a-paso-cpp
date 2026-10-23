@@ -109,7 +109,7 @@
         - "cincout"
       cases: 
         cpp: "literal.cpp"
-        out: "2147483647\n-2147483648\n0.00001\n100000\n0"
+        out: "2147483647\n2147483648\n1e-05\n100000\n0"
     io: 
       after: 
         - "cincout"
@@ -308,7 +308,7 @@
           cpp: "overflow.cpp"
           config:
             unsigned_overflow: "ignore"
-          out: "254\n"
+          out: "255\n"
     infinite_loop:
       cases:
         cpp: "infinite_loop.cpp"

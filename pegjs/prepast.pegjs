@@ -338,7 +338,7 @@ IntegerConstant
       / HexConstant
       / OctalConstant
       )
-    b:IntegerSuffix? {return a;}
+    b:IntegerSuffix? {return addPositionInfo(a);} // keep the suffix (1000000LL) in the emitted text
     ;
 
 DecimalConstant = a:[1-9] b:[0-9]* {return addPositionInfo({type:'DecimalConstant', value:a + b.join("")});};

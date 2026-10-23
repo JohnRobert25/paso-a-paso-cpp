@@ -167,7 +167,7 @@ export = {
             if (denom.v === 0) {
                 rt.raiseException("divided by zero");
             }
-            const quot = rt.val(rt.intTypeLiteral, Math.floor(numer.v / denom.v));
+            const quot = rt.val(rt.intTypeLiteral, Math.trunc(numer.v / denom.v));
             const rem = rt.val(rt.intTypeLiteral, numer.v % denom.v);
             return {
                 t: div_t_t,
@@ -200,7 +200,7 @@ export = {
             if (denom.v === 0) {
                 rt.raiseException("divided by zero");
             }
-            const quot = rt.val(rt.longTypeLiteral, Math.floor(numer.v / denom.v));
+            const quot = rt.val(rt.longTypeLiteral, Math.trunc(numer.v / denom.v));
             const rem = rt.val(rt.longTypeLiteral, numer.v % denom.v);
             return {
                 t: ldiv_t_t,

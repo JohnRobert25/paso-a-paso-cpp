@@ -4,119 +4,119 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 123
+    "ms": 117
   },
   {
     "nombre": "02_hola_bits",
     "etapa": "1",
     "estado": "error",
     "detalle": "ERROR: Parsing Failure:",
-    "ms": 118
+    "ms": 113
   },
   {
     "nombre": "03_suma",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 122
+    "ms": 118
   },
   {
     "nombre": "04_long_long",
-    "etapa": "1",
-    "estado": "error",
-    "detalle": "7:19 overflow of 1000000000000(unsigned int)",
-    "ms": 120
-  },
-  {
-    "nombre": "05_div_mod",
-    "etapa": "1",
-    "estado": "distinto",
-    "detalle": "g++: \"3 1\\n-3 -1\\n3.5\\n2\\n2.5\\n\"  JSCPP: \"3 1\\n-4 -1\\n3.5\\n2\\n2.5\\n\"",
-    "ms": 129
-  },
-  {
-    "nombre": "06_double_precision",
-    "etapa": "1",
-    "estado": "igual",
-    "detalle": "",
-    "ms": 138
-  },
-  {
-    "nombre": "07_double_sin_formato",
-    "etapa": "1",
-    "estado": "distinto",
-    "detalle": "g++: \"0.3\\n0.333333\\n1e+08\\n2.5\\n\"  JSCPP: \"0.30000000000000004\\n0.3333333333333333\\n100000000\\n2.5\\n\"",
-    "ms": 120
-  },
-  {
-    "nombre": "08_char",
-    "etapa": "1",
-    "estado": "igual",
-    "detalle": "",
-    "ms": 122
-  },
-  {
-    "nombre": "09_bool_if",
-    "etapa": "1",
-    "estado": "igual",
-    "detalle": "",
-    "ms": 128
-  },
-  {
-    "nombre": "10_for_suma",
-    "etapa": "1",
-    "estado": "igual",
-    "detalle": "",
-    "ms": 123
-  },
-  {
-    "nombre": "11_while_digitos",
-    "etapa": "1",
-    "estado": "igual",
-    "detalle": "",
-    "ms": 122
-  },
-  {
-    "nombre": "12_do_while",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
     "ms": 125
   },
   {
+    "nombre": "05_div_mod",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 123
+  },
+  {
+    "nombre": "06_double_precision",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 123
+  },
+  {
+    "nombre": "07_double_sin_formato",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 122
+  },
+  {
+    "nombre": "08_char",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 121
+  },
+  {
+    "nombre": "09_bool_if",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 124
+  },
+  {
+    "nombre": "10_for_suma",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 122
+  },
+  {
+    "nombre": "11_while_digitos",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 125
+  },
+  {
+    "nombre": "12_do_while",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 127
+  },
+  {
     "nombre": "13_overflow_int",
     "etapa": "1",
     "estado": "error",
     "detalle": "5:9 overflow of 2147483648(int)",
-    "ms": 124
+    "ms": 125
   },
   {
     "nombre": "14_triangulo",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 126
+    "ms": 122
   },
   {
     "nombre": "15_max_min_lectura",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 131
+    "ms": 125
   },
   {
     "nombre": "16_operadores",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 128
+    "ms": 127
   },
   {
     "nombre": "17_sin_return",
     "etapa": "1",
     "estado": "error",
     "detalle": "<position unavailable> you must return a value",
-    "ms": 119
+    "ms": 118
   },
   {
     "nombre": "18_break_continue",
@@ -130,49 +130,49 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 124
+    "ms": 120
   },
   {
     "nombre": "20_arreglo",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 126
+    "ms": 125
   },
   {
     "nombre": "21_arreglo_global_maxn",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 184
+    "ms": 207
   },
   {
     "nombre": "22_matriz",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 126
+    "ms": 127
   },
   {
     "nombre": "23_string",
     "etapa": "2",
     "estado": "error",
     "detalle": "2:1 cannot find library: string",
-    "ms": 113
+    "ms": 108
   },
   {
     "nombre": "24_getline",
     "etapa": "2",
     "estado": "error",
     "detalle": "2:1 cannot find library: string",
-    "ms": 112
+    "ms": 111
   },
   {
     "nombre": "25_char_arreglo",
     "etapa": "2",
     "estado": "error",
     "detalle": "9:50 'a'(char) is not a left value",
-    "ms": 128
+    "ms": 125
   },
   {
     "nombre": "26_funciones",
@@ -186,7 +186,7 @@
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 219
+    "ms": 217
   },
   {
     "nombre": "28_arreglo_a_funcion",
@@ -207,7 +207,7 @@
     "etapa": "despues",
     "estado": "error",
     "detalle": "2:1 cannot find library: algorithm",
-    "ms": 109
+    "ms": 111
   },
   {
     "nombre": "32_max_min_swap",
@@ -221,48 +221,83 @@
     "etapa": "despues",
     "estado": "error",
     "detalle": "ERROR: Parsing Failure:",
-    "ms": 115
+    "ms": 114
   },
   {
     "nombre": "34_typedef_define",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 121
+    "ms": 127
   },
   {
     "nombre": "35_scanf_printf",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 123
+    "ms": 127
   },
   {
     "nombre": "36_while_cin",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 121
+    "ms": 127
   },
   {
     "nombre": "37_struct",
     "etapa": "despues",
     "estado": "error",
     "detalle": "3:1 type struct Punto is not defined",
-    "ms": 123
+    "ms": 119
   },
   {
     "nombre": "38_range_for_auto",
     "etapa": "despues",
     "estado": "error",
     "detalle": "ERROR: Parsing Failure:",
-    "ms": 120
+    "ms": 119
   },
   {
     "nombre": "39_unsigned",
     "etapa": "despues",
     "estado": "error",
     "detalle": "5:9 overflow of -1(unsigned int)",
-    "ms": 118
+    "ms": 121
+  },
+  {
+    "nombre": "40_division_negativos",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 125
+  },
+  {
+    "nombre": "41_double_formato",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 128
+  },
+  {
+    "nombre": "42_globales_en_cero",
+    "etapa": "2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 130
+  },
+  {
+    "nombre": "43_constantes_y_tipos",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 131
+  },
+  {
+    "nombre": "44_bits",
+    "etapa": "despues",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 128
   }
 ]

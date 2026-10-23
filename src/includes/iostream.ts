@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 import { ArrayVariable, CRuntime, IntVariable, Variable, VariableType } from "../rt";
 import { Cin, Cout } from "./shared/iomanip_types";
+import formatFloat = require("./shared/format_float");
 
 const _skipSpace = function (s: string) {
     const r = /^\s*/.exec(s);
@@ -64,6 +65,10 @@ export = {
                                 b = _skipSpace(b);
                                 r = _read(rt, /^[-+]?(?:([0-9]*)([eE]\+?[0-9]+)?)|0/, b, t.t);
                                 v = parseInt(r[0], 10);
+                                const token: string = r[0];
+                                if (/^[-+]?[0-9]+$/.test(token)) {
+                                    rt.checkExactInteger(v, () => BigInt(token));
+                                }
                                 break;
                             case "float": case "double":
                                 b = _skipSpace(b);
@@ -205,6 +210,8 @@ export = {
                                 r = String.fromCharCode(t.v as number);
                             } else if (t.t.name === "bool") {
                                 r = t.v ? "1" : "0";
+                            } else if (rt.isFloatType(t)) {
+                                r = formatFloat(t.v);
                             } else {
                                 r = t.v.toString();
                             }
