@@ -403,7 +403,8 @@ InitializerList
 //-------------------------------------------------------------------------
 
 PrimaryExpression
-    = a:Identifier {return addPositionInfo({type:'IdentifierExpression', Identifier:a});}
+    // namespaces are not modeled (everything is global), so std::cin and ios::sync_with_stdio are cin and sync_with_stdio
+    = SCOPEOP? (Identifier SCOPEOP)* a:Identifier {return addPositionInfo({type:'IdentifierExpression', Identifier:a});}
     / a:Constant {return addPositionInfo({type:'ConstantExpression', Expression:a});}
     / a:StringLiteral {return addPositionInfo({type:'StringLiteralExpression', value:a});}
     / LPAR a:Expression RPAR {return addPositionInfo({type:'ParenthesesExpression', Expression:a});}

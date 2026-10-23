@@ -2,6 +2,7 @@
 import { ArrayVariable, CRuntime, IntVariable, Variable, VariableType } from "../rt";
 import { Cin, Cout } from "./shared/iomanip_types";
 import formatFloat = require("./shared/format_float");
+import loadSwap = require("./shared/swap");
 
 const _skipSpace = function (s: string) {
     const r = /^\s*/.exec(s);
@@ -181,6 +182,13 @@ export = {
         };
 
         rt.regFunc(_get, cin.t, "get", [], rt.intTypeLiteral);
+
+        // Fast input in contests: ios::sync_with_stdio(false); cin.tie(nullptr / 0 / NULL).
+        // There is nothing to speed up in the interpreter, so they do nothing.
+        rt.regFunc((rt: CRuntime) => rt.val(rt.boolTypeLiteral, true), "global", "sync_with_stdio", ["?"], rt.boolTypeLiteral);
+        rt.regFunc((rt: CRuntime) => rt.nullPointer, cin.t, "tie", ["?"], rt.voidPointerType);
+
+        loadSwap(rt);
 
         const _bool = (rt: CRuntime, _cin: Cin) => rt.val(rt.boolTypeLiteral, !_cin.v.failbit);
 

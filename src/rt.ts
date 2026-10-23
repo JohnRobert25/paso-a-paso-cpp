@@ -282,7 +282,8 @@ export class CRuntime {
         this.nullPointerValue = this.makeNormalPointerValue(null);
         this.voidPointerType = this.normalPointerType(this.voidTypeLiteral);
         this.nullPointer = this.val(this.voidPointerType, this.nullPointerValue) as PointerVariable;
-        this.scope = [{ "$name": "global", variables: {} }];
+        // nullptr is part of the language, not of a library
+        this.scope = [{ "$name": "global", variables: { nullptr: this.nullPointer } }];
         this.typedefs = {};
     }
 
