@@ -379,8 +379,11 @@ export class CRuntime {
                 if (!rt.isTypeEqualTo(retType, rt.voidTypeLiteral)) {
                     if (ret instanceof Array && (ret[0] === "return")) {
                         ret = rt.cast(retType, ret[1]);
+                    } else if (name === "main") {
+                        // reaching the end of main is the same as return 0
+                        ret = rt.val(rt.intTypeLiteral, 0);
                     } else {
-                        rt.raiseException("you must return a value");
+                        rt.raiseException(`function ${name} ended without returning a value`);
                     }
                 } else {
                     if (Array.isArray(ret)) {

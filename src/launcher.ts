@@ -18,6 +18,7 @@ const includes: { [fileName: string]: IncludeModule } = {
     cstdlib: require("./includes/cstdlib"),
     ctime: require("./includes/ctime"),
     iomanip: require("./includes/iomanip"),
+    "bits/stdc++.h": require("./includes/bits_stdcpp"),
     foo: require("./includes/dummy_class_foo")
 };
 

@@ -4,28 +4,28 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 127
+    "ms": 124
   },
   {
     "nombre": "02_hola_bits",
-    "etapa": "1",
-    "estado": "error",
-    "detalle": "ERROR: Parsing Failure:",
-    "ms": 114
-  },
-  {
-    "nombre": "03_suma",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
     "ms": 120
   },
   {
+    "nombre": "03_suma",
+    "etapa": "1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 123
+  },
+  {
     "nombre": "04_long_long",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 124
+    "ms": 120
   },
   {
     "nombre": "05_div_mod",
@@ -39,14 +39,14 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 122
+    "ms": 126
   },
   {
     "nombre": "07_double_sin_formato",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 125
+    "ms": 119
   },
   {
     "nombre": "08_char",
@@ -67,7 +67,7 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 128
+    "ms": 126
   },
   {
     "nombre": "11_while_digitos",
@@ -81,70 +81,70 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 128
+    "ms": 121
   },
   {
     "nombre": "13_overflow_int",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 120
+    "ms": 125
   },
   {
     "nombre": "14_triangulo",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 129
+    "ms": 121
   },
   {
     "nombre": "15_max_min_lectura",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 129
+    "ms": 126
   },
   {
     "nombre": "16_operadores",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 131
+    "ms": 129
   },
   {
     "nombre": "17_sin_return",
     "etapa": "1",
-    "estado": "error",
-    "detalle": "<position unavailable> you must return a value",
-    "ms": 119
+    "estado": "igual",
+    "detalle": "",
+    "ms": 120
   },
   {
     "nombre": "18_break_continue",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 124
+    "ms": 131
   },
   {
     "nombre": "19_switch",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 123
+    "ms": 124
   },
   {
     "nombre": "20_arreglo",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 127
+    "ms": 129
   },
   {
     "nombre": "21_arreglo_global_maxn",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 206
+    "ms": 212
   },
   {
     "nombre": "22_matriz",
@@ -158,14 +158,14 @@
     "etapa": "2",
     "estado": "error",
     "detalle": "2:1 cannot find library: string",
-    "ms": 117
+    "ms": 116
   },
   {
     "nombre": "24_getline",
     "etapa": "2",
     "estado": "error",
     "detalle": "2:1 cannot find library: string",
-    "ms": 114
+    "ms": 112
   },
   {
     "nombre": "25_char_arreglo",
@@ -179,56 +179,56 @@
     "etapa": "2",
     "estado": "error",
     "detalle": "ERROR: Parsing Failure:",
-    "ms": 121
+    "ms": 127
   },
   {
     "nombre": "27_recursion",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 213
+    "ms": 227
   },
   {
     "nombre": "28_arreglo_a_funcion",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 123
+    "ms": 128
   },
   {
     "nombre": "30_vector",
     "etapa": "despues",
     "estado": "error",
     "detalle": "2:1 cannot find library: vector",
-    "ms": 116
+    "ms": 118
   },
   {
     "nombre": "31_sort",
     "etapa": "despues",
     "estado": "error",
     "detalle": "2:1 cannot find library: algorithm",
-    "ms": 109
+    "ms": 111
   },
   {
     "nombre": "32_max_min_swap",
     "etapa": "despues",
     "estado": "error",
     "detalle": "2:1 cannot find library: algorithm",
-    "ms": 110
+    "ms": 114
   },
   {
     "nombre": "33_fast_io",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 122
+    "ms": 125
   },
   {
     "nombre": "34_typedef_define",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 119
+    "ms": 123
   },
   {
     "nombre": "35_scanf_printf",
@@ -242,49 +242,49 @@
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 126
+    "ms": 124
   },
   {
     "nombre": "37_struct",
     "etapa": "despues",
     "estado": "error",
     "detalle": "3:1 type struct Punto is not defined",
-    "ms": 122
+    "ms": 121
   },
   {
     "nombre": "38_range_for_auto",
     "etapa": "despues",
     "estado": "error",
     "detalle": "ERROR: Parsing Failure:",
-    "ms": 131
+    "ms": 124
   },
   {
     "nombre": "39_unsigned",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 119
+    "ms": 127
   },
   {
     "nombre": "40_division_negativos",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 123
+    "ms": 128
   },
   {
     "nombre": "41_double_formato",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 133
+    "ms": 132
   },
   {
     "nombre": "42_globales_en_cero",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 128
+    "ms": 130
   },
   {
     "nombre": "43_constantes_y_tipos",
@@ -298,6 +298,6 @@
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 133
+    "ms": 132
   }
 ]
