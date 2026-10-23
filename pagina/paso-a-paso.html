@@ -129,8 +129,10 @@
   .marco td.valor { word-break: break-all; }
   .cambio { background: var(--cambio); color: var(--cambio-texto); font-weight: 600; }
   .vacio { color: var(--tenue); font-size: 14px; margin: 0; }
-  #salida { font: 14px/1.5 var(--mono); white-space: pre-wrap; margin: 0; min-height: 2.5em; word-break: break-all; }
-  #salida .nuevo { background: var(--nuevo); }
+  #salida, #entradaVista { font: 14px/1.5 var(--mono); white-space: pre-wrap; margin: 0; min-height: 2.5em; word-break: break-all; }
+  #entradaVista { max-height: 9em; overflow: auto; }
+  #salida .nuevo, #entradaVista .nuevo { background: var(--nuevo); }
+  #entradaVista .leido { color: var(--tenue); }
   #estado { padding: 10px 12px; border-radius: 6px; margin: 0; }
   #estado.fin { background: var(--cambio); color: var(--cambio-texto); }
   #estado.error { background: var(--error); color: var(--error-texto); white-space: pre-wrap; font-family: var(--mono); font-size: 13px; }
@@ -194,6 +196,11 @@
     </div>
     <div class="lado">
       <p id="estado" class="oculto"></p>
+      <div class="panel">
+        <h2>Entrada</h2>
+        <pre id="entradaVista"></pre>
+        <p class="ayuda">Lo gris ya lo leyó <code>cin</code>.</p>
+      </div>
       <div class="panel">
         <h2>Variables</h2>
         <div id="variables"></div>
@@ -304,6 +311,7 @@ const $ = (id) => document.getElementById(id);
 let pasos = [];
 let actual = 0;
 let lineasCodigo = [];
+let entradaActual = "";
 
 // ---------- Valores como los ve el alumno ----------
 
@@ -379,6 +387,11 @@ function prepararPasos(codigo, entrada) {
   const dbg = JSCPP.run(codigo, entrada, { debug: true, stdio: { write: (s) => { salida += s; } } });
   // detenerse por instrucción; los pasos sin cambios en la misma línea se juntan abajo
   dbg.setStopConditions({ isStatement: true, positionChanged: true, lineChanged: false });
+  // cuánto de la entrada ya leyó cin: lo que le queda está en su buffer
+  const leido = () => {
+    const cin = dbg.rt.scope[0].variables.cin;
+    return cin && typeof cin.v.buf === "string" ? entrada.length - cin.v.buf.length : 0;
+  };
 
   const lista = [];
   let anterior = "";
@@ -392,7 +405,7 @@ function prepararPasos(codigo, entrada) {
         const clave = nodo.sLine + "|" + JSON.stringify(marcos);
         if (clave !== anterior) {
           if (lista.length >= MAX_PASOS) { final.cortado = true; break; }
-          lista.push({ linea: nodo.sLine, marcos, salida });
+          lista.push({ linea: nodo.sLine, marcos, salida, leido: leido() });
           anterior = clave;
         }
       }
@@ -406,7 +419,7 @@ function prepararPasos(codigo, entrada) {
     if (m) final.linea = Number(m[1]);
   }
   const ultimo = lista[lista.length - 1];
-  lista.push({ ...final, marcos: ultimo ? ultimo.marcos : [], salida });
+  lista.push({ ...final, marcos: ultimo ? ultimo.marcos : [], salida, leido: leido() });
   return lista;
 }
 
@@ -526,6 +539,14 @@ function mostrar() {
   const nueva = p.salida.slice(anterior.length);
   $("salida").innerHTML = escapar(anterior) + (nueva ? `<span class="nuevo">${escapar(nueva)}</span>` : "");
 
+  // entrada: lo ya leído en gris, lo leído en este paso resaltado, lo que falta normal
+  const desde = previo ? previo.leido : 0;
+  $("entradaVista").innerHTML = !entradaActual
+    ? `<span class="leido">(sin entrada)</span>`
+    : `<span class="leido">${escapar(entradaActual.slice(0, desde))}</span>`
+      + (p.leido > desde ? `<span class="leido nuevo">${escapar(entradaActual.slice(desde, p.leido))}</span>` : "")
+      + escapar(entradaActual.slice(p.leido));
+
   const estado = $("estado");
   estado.className = "oculto";
   if (esFinal) {
@@ -581,6 +602,7 @@ function empezar() {
     error.classList.remove("oculto");
     return;
   }
+  entradaActual = entrada;
   dibujarCodigo(codigo);
   dibujarHistorial();
   $("editar").classList.add("oculto");
