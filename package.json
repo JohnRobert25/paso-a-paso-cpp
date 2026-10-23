@@ -26,6 +26,7 @@
     "watch-other": "grunt watch",
     "watch": "npx concurrently 'npm:watch-*'",
     "test": "mocha --require ts-node/register test/test.ts test/test-debugger.ts --bail",
+    "pagina": "node node_modules/grunt-cli/bin/grunt clean peg copy ts && npx -y esbuild@0.24.0 pagina/entrada-navegador.js --bundle --minify --platform=browser --alias:util=./pagina/vacio-node.js --alias:stream=./pagina/vacio-node.js --outfile=pagina/jscpp.js",
     "prepublish": "grunt build"
   },
   "nyc": {

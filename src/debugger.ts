@@ -34,6 +34,8 @@ export default class Debugger {
     };
     rt: CRuntime;
     gen: Generator<any, IntVariable | false, any>;
+    // globals defined by the #included libraries (cin, cout, INT_MAX...), not by the program
+    libraryGlobals: Set<string>;
     constructor(src?: string, oldSrc?: string) {
         this.src = src || "";
         this.srcByLines = (oldSrc || src || "").split("\n");

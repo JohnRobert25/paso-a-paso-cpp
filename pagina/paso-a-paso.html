@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paso a paso C++</title>
+<!--
+  Prototipo: ver un programa de C++ paso a paso, como Karel.
+  Usa jscpp.js, que se genera con `npm run pagina` desde la raíz del proyecto.
+  El intérprete corre aquí mismo, en el navegador; no usa servidor.
+-->
+<style>
+  :root {
+    --fondo: #f6f7f9;
+    --panel: #ffffff;
+    --borde: #d9dde3;
+    --texto: #1d2330;
+    --tenue: #667085;
+    --acento: #2563eb;
+    --acento-texto: #ffffff;
+    --actual: #fff3c4;
+    --actual-borde: #e0a800;
+    --cambio: #dcfce7;
+    --cambio-texto: #166534;
+    --error: #fde2e2;
+    --error-texto: #9b1c1c;
+    --nuevo: #dbeafe;
+    --mono: Consolas, "Cascadia Mono", Menlo, "DejaVu Sans Mono", "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo: #12151b;
+      --panel: #1b1f27;
+      --borde: #2f3542;
+      --texto: #e5e7eb;
+      --tenue: #9aa3b2;
+      --acento: #60a5fa;
+      --acento-texto: #0b1220;
+      --actual: #3d3413;
+      --actual-borde: #d4a72c;
+      --cambio: #133a24;
+      --cambio-texto: #86efac;
+      --error: #3f1d1d;
+      --error-texto: #fca5a5;
+      --nuevo: #1e3a5f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header { padding: 14px 16px 4px; }
+  h1 { margin: 0; font-size: 20px; }
+  header p { margin: 2px 0 0; color: var(--tenue); font-size: 14px; }
+  main { padding: 12px 16px 24px; max-width: 1400px; margin: 0 auto; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  h2 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--tenue); }
+  button, select {
+    font: inherit;
+    border: 1px solid var(--borde);
+    background: var(--panel);
+    color: var(--texto);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  button:hover:not(:disabled) { border-color: var(--acento); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.principal { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); font-weight: 600; }
+  textarea {
+    width: 100%;
+    font: 14px/1.5 var(--mono);
+    color: var(--texto);
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: 8px;
+    resize: vertical;
+    tab-size: 4;
+  }
+  .oculto { display: none !important; }
+
+  /* Editar */
+  #editar { display: grid; gap: 12px; grid-template-columns: 2fr 1fr; }
+  #editar .acciones { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  #codigo { min-height: 420px; }
+  #entrada { min-height: 120px; }
+  .nota { color: var(--tenue); font-size: 13px; margin: 6px 0 0; }
+  #errorEditar { grid-column: 1 / -1; }
+
+  /* Paso a paso */
+  #pasos { display: grid; gap: 12px; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .controles { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  #contador { margin-left: auto; color: var(--tenue); font-variant-numeric: tabular-nums; }
+  .codigo-vista { font: 14px/1.6 var(--mono); max-height: 60vh; overflow: auto; border: 1px solid var(--borde); border-radius: 6px; }
+  .linea { display: flex; white-space: pre; border-left: 3px solid transparent; }
+  .linea .num {
+    flex: none;
+    width: 3.2em;
+    padding-right: .8em;
+    text-align: right;
+    color: var(--tenue);
+    cursor: pointer;
+    user-select: none;
+  }
+  .linea .num:hover { color: var(--acento); text-decoration: underline; }
+  .linea .txt { padding-right: 12px; }
+  .linea.actual { background: var(--actual); border-left-color: var(--actual-borde); }
+  .linea.actual .num::before { content: "➜ "; color: var(--actual-borde); }
+  .linea.error { background: var(--error); border-left-color: var(--error-texto); }
+  .ayuda { color: var(--tenue); font-size: 13px; margin: 8px 0 0; }
+  .lado { display: grid; gap: 12px; align-content: start; }
+  .marco { border: 1px solid var(--borde); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+  .marco:last-child { margin-bottom: 0; }
+  .marco h3 { margin: 0; padding: 4px 8px; font: 600 13px var(--mono); background: var(--fondo); border-bottom: 1px solid var(--borde); }
+  .marco.activo h3 { color: var(--acento); }
+  .marco table { width: 100%; border-collapse: collapse; font: 14px var(--mono); }
+  .marco td { padding: 3px 8px; border-top: 1px solid var(--borde); vertical-align: top; }
+  .marco tr:first-child td { border-top: 0; }
+  .marco td:first-child { width: 35%; color: var(--tenue); }
+  .marco td.valor { word-break: break-all; }
+  .cambio { background: var(--cambio); color: var(--cambio-texto); font-weight: 600; }
+  .vacio { color: var(--tenue); font-size: 14px; margin: 0; }
+  #salida { font: 14px/1.5 var(--mono); white-space: pre-wrap; margin: 0; min-height: 2.5em; word-break: break-all; }
+  #salida .nuevo { background: var(--nuevo); }
+  #estado { padding: 10px 12px; border-radius: 6px; margin: 0; }
+  #estado.fin { background: var(--cambio); color: var(--cambio-texto); }
+  #estado.error { background: var(--error); color: var(--error-texto); white-space: pre-wrap; font-family: var(--mono); font-size: 13px; }
+  #historialPanel { grid-column: 1 / -1; }
+  .historial { max-height: 40vh; overflow: auto; border: 1px solid var(--borde); border-radius: 6px; }
+  .historial table { border-collapse: collapse; font: 13px var(--mono); min-width: 100%; }
+  .historial th, .historial td { padding: 3px 10px; border-bottom: 1px solid var(--borde); text-align: left; white-space: nowrap; max-width: 16em; overflow: hidden; text-overflow: ellipsis; }
+  .historial th { position: sticky; top: 0; background: var(--fondo); z-index: 1; }
+  .historial th small { color: var(--tenue); font-weight: normal; }
+  .historial tbody tr { cursor: pointer; }
+  .historial tbody tr:hover td { outline: 1px solid var(--borde); }
+  .historial tr.actual td { background: var(--actual); }
+  .historial tr.actual td.cambio { background: var(--cambio); }
+
+  /* el código se ve tal como se escribe: sin unir >> en ≫ ni >= en ≥; va al final porque `font:` lo reinicia */
+  textarea, code, pre, .codigo-vista, .codigo-vista *, .marco *, .historial * { font-variant-ligatures: none; font-feature-settings: "calt" 0, "liga" 0; }
+
+  @media (max-width: 860px) {
+    #editar, #pasos { grid-template-columns: minmax(0, 1fr); }
+    #contador { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Paso a paso C++</h1>
+  <p>Mira tu programa ejecutarse línea por línea, con el valor de cada variable.</p>
+</header>
+<main>
+  <section id="editar">
+    <div class="panel">
+      <h2>Código</h2>
+      <textarea id="codigo" spellcheck="false" aria-label="Código"></textarea>
+    </div>
+    <div class="panel">
+      <h2>Entrada</h2>
+      <textarea id="entrada" spellcheck="false" aria-label="Entrada"></textarea>
+      <p class="nota">Lo que el programa leerá con <code>cin</code>. Copia aquí la entrada de un ejemplo del problema.</p>
+    </div>
+    <div class="acciones">
+      <button id="btnEmpezar" class="principal">Ver paso a paso</button>
+      <label>Ejemplos:
+        <select id="ejemplos"></select>
+      </label>
+    </div>
+    <p id="errorEditar" class="panel oculto" style="color: var(--error-texto); background: var(--error); white-space: pre-wrap; font-family: var(--mono); font-size: 13px; margin: 0;"></p>
+  </section>
+
+  <section id="pasos" class="oculto">
+    <div class="panel">
+      <div class="controles">
+        <button id="btnInicio" title="Volver al inicio (Inicio)">⏮ Inicio</button>
+        <button id="btnAtras" title="Paso anterior (←)">◀ Atrás</button>
+        <button id="btnPaso" class="principal" title="Siguiente paso (→)">Siguiente paso ▶</button>
+        <button id="btnFinal" title="Ir al final (Fin)">Al final ⏭</button>
+        <button id="btnEditar">Editar código</button>
+        <span id="contador"></span>
+      </div>
+      <div id="vista" class="codigo-vista"></div>
+      <p class="ayuda">La línea marcada con ➜ es la <strong>siguiente</strong> que se va a ejecutar. Haz clic en un número de línea para correr hasta ahí.</p>
+    </div>
+    <div class="lado">
+      <p id="estado" class="oculto"></p>
+      <div class="panel">
+        <h2>Variables</h2>
+        <div id="variables"></div>
+      </div>
+      <div class="panel">
+        <h2>Salida</h2>
+        <pre id="salida"></pre>
+      </div>
+    </div>
+    <div id="historialPanel" class="panel">
+      <h2>Historial (prueba de escritorio)</h2>
+      <div class="historial"><table id="historial"></table></div>
+    </div>
+  </section>
+</main>
+
+<script src="jscpp.js"></script>
+<script>
+"use strict";
+
+const EJEMPLOS = {
+  "Suma de cifras (while)": {
+    codigo: `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    int suma = 0, cifras = 0;
+    while (n > 0) {
+        suma += n % 10;
+        n /= 10;
+        cifras++;
+    }
+    cout << suma << " " << cifras << endl;
+    return 0;
+}
+`,
+    entrada: "98765\n",
+  },
+  "Mayor de N números (for)": {
+    codigo: `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    int mayor = -1000000000;
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        if (x > mayor) {
+            mayor = x;
+        }
+    }
+    cout << mayor << endl;
+    return 0;
+}
+`,
+    entrada: "5\n3 -2 9 4 0\n",
+  },
+  "Arreglo al revés": {
+    codigo: `#include <iostream>
+using namespace std;
+
+int a[100];
+
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    for (int i = n - 1; i >= 0; i--) {
+        cout << a[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
+`,
+    entrada: "4\n10 20 30 40\n",
+  },
+  "Factorial (recursión)": {
+    codigo: `#include <iostream>
+using namespace std;
+
+long long factorial(int n) {
+    if (n == 0) {
+        return 1;
+    }
+    long long r = n * factorial(n - 1);
+    return r;
+}
+
+int main() {
+    cout << factorial(4) << endl;
+    return 0;
+}
+`,
+    entrada: "",
+  },
+};
+
+const MAX_PASOS = 3000;        // pasos que se guardan para mostrar
+const MAX_OPERACIONES = 300000; // freno para ciclos infinitos (unos 3 segundos)
+
+const $ = (id) => document.getElementById(id);
+let pasos = [];
+let actual = 0;
+let lineasCodigo = [];
+
+// ---------- Valores como los ve el alumno ----------
+
+// double como lo escribe cout: 6 cifras significativas (0.1 + 0.2 -> 0.3)
+function formatoDouble(x) {
+  if (!Number.isFinite(x)) return Number.isNaN(x) ? "?" : (x < 0 ? "-inf" : "inf");
+  if (x === 0) return "0";
+  const [mantisa, expTexto] = x.toExponential(5).split("e");
+  const exp = Number(expTexto);
+  const sinCeros = (s) => s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
+  if (exp < -4 || exp >= 6) return sinCeros(mantisa) + "e" + (exp < 0 ? "-" : "+") + String(Math.abs(exp)).padStart(2, "0");
+  return sinCeros(x.toFixed(5 - exp));
+}
+
+function texto(v, nivel = 0) {
+  const t = v.t;
+  if (t.type === "primitive") {
+    const n = v.v;
+    if (typeof n === "number" && Number.isNaN(n)) return "?";
+    if (t.name === "bool") return n ? "true" : "false";
+    if (t.name.includes("char")) return n === 0 ? "'\\0'" : `'${String.fromCharCode(n)}'`;
+    if (t.name === "float" || t.name === "double") return formatoDouble(n);
+    return String(n);
+  }
+  if (t.type === "pointer" && t.ptrType === "array") {
+    const elementos = v.v.target;
+    if (t.eleType.type === "primitive" && t.eleType.name.includes("char")) {
+      let s = "";
+      for (const e of elementos) {
+        if (e.v === 0 || s.length > 40) break;
+        s += Number.isNaN(e.v) ? "?" : String.fromCharCode(e.v);
+      }
+      return `"${s}"`;
+    }
+    const max = nivel === 0 ? 10 : 5;
+    const partes = elementos.slice(0, max).map((e) => texto(e, nivel + 1));
+    if (elementos.length > max) partes.push("…");
+    return "[" + partes.join(", ") + "]";
+  }
+  if (t.type === "class") return "{…}";
+  if (t.type === "pointer") return "(puntero)";
+  return "?";
+}
+
+// Las variables vivas, agrupadas por llamada: globales, main, y cada función llamada
+function capturar(dbg) {
+  const rt = dbg.rt;
+  const marcos = [];
+  const globales = [];
+  for (const [nombre, v] of Object.entries(rt.scope[0].variables)) {
+    if (dbg.libraryGlobals.has(nombre) || v.t.type === "function") continue;
+    globales.push({ nombre, valor: texto(v) });
+  }
+  if (globales.length) marcos.push({ funcion: "globales", vars: globales });
+  let enFuncion = false;
+  for (const ambito of rt.scope.slice(1)) {
+    if (ambito.$name.startsWith("function ")) {
+      marcos.push({ funcion: ambito.$name.slice(9), vars: [] });
+      enFuncion = true;
+    }
+    if (!enFuncion) continue;
+    for (const [nombre, v] of Object.entries(ambito.variables)) {
+      marcos[marcos.length - 1].vars.push({ nombre, valor: texto(v) });
+    }
+  }
+  return marcos;
+}
+
+// ---------- Correr el programa y guardar cada paso ----------
+
+function prepararPasos(codigo, entrada) {
+  let salida = "";
+  const dbg = JSCPP.run(codigo, entrada, { debug: true, stdio: { write: (s) => { salida += s; } } });
+  // detenerse por instrucción; los pasos sin cambios en la misma línea se juntan abajo
+  dbg.setStopConditions({ isStatement: true, positionChanged: true, lineChanged: false });
+
+  const lista = [];
+  let anterior = "";
+  let operaciones = 0;
+  const final = { linea: null, fin: false, error: null, cortado: false };
+  try {
+    while (true) {
+      const nodo = dbg.nextNode();
+      if (nodo) {
+        const marcos = capturar(dbg);
+        const clave = nodo.sLine + "|" + JSON.stringify(marcos);
+        if (clave !== anterior) {
+          if (lista.length >= MAX_PASOS) { final.cortado = true; break; }
+          lista.push({ linea: nodo.sLine, marcos, salida });
+          anterior = clave;
+        }
+      }
+      const r = dbg.next();
+      if (r !== false) { final.fin = true; final.codigoSalida = r.v; break; }
+      if (++operaciones > MAX_OPERACIONES) { final.cortado = true; break; }
+    }
+  } catch (e) {
+    final.error = String(e.message || e);
+    const m = /^(\d+):(\d+) /.exec(final.error);
+    if (m) final.linea = Number(m[1]);
+  }
+  const ultimo = lista[lista.length - 1];
+  lista.push({ ...final, marcos: ultimo ? ultimo.marcos : [], salida });
+  return lista;
+}
+
+// ---------- Mostrar ----------
+
+function escapar(s) {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function dibujarCodigo(codigo) {
+  lineasCodigo = codigo.replace(/\r\n/g, "\n").split("\n");
+  if (lineasCodigo[lineasCodigo.length - 1] === "") lineasCodigo.pop();
+  $("vista").innerHTML = lineasCodigo.map((l, i) =>
+    `<div class="linea" id="l${i + 1}"><span class="num" data-linea="${i + 1}" title="Correr hasta aquí">${i + 1}</span><span class="txt">${escapar(l) || " "}</span></div>`
+  ).join("");
+}
+
+function nombreMarco(m, i, marcos) {
+  if (m.funcion === "globales") return "Variables globales";
+  const anteriores = marcos.slice(0, i).filter((x) => x.funcion === m.funcion).length;
+  return anteriores ? `${m.funcion}()  — llamada ${anteriores + 1}` : `${m.funcion}()`;
+}
+
+function dibujarVariables(paso, previo) {
+  const marcos = paso.marcos;
+  if (!marcos.length) {
+    $("variables").innerHTML = `<p class="vacio">Todavía no hay variables.</p>`;
+    return;
+  }
+  const valorPrevio = (i, nombre) => {
+    const m = previo && previo.marcos[i];
+    if (!m || m.funcion !== marcos[i].funcion) return undefined;
+    const v = m.vars.find((x) => x.nombre === nombre);
+    return v && v.valor;
+  };
+  const ultimoFuncion = marcos.length - 1;
+  $("variables").innerHTML = marcos.map((m, i) => {
+    const filas = m.vars.length
+      ? m.vars.map((v) => {
+          const antes = valorPrevio(i, v.nombre);
+          const cambio = previo && antes !== v.valor;
+          return `<tr><td>${escapar(v.nombre)}</td><td class="valor${cambio ? " cambio" : ""}">${escapar(v.valor)}</td></tr>`;
+        }).join("")
+      : `<tr><td colspan="2" class="vacio">(sin variables todavía)</td></tr>`;
+    const activo = i === ultimoFuncion && m.funcion !== "globales";
+    return `<div class="marco${activo ? " activo" : ""}"><h3>${escapar(nombreMarco(m, i, marcos))}</h3><table>${filas}</table></div>`;
+  }).join("");
+}
+
+// Columnas del historial: cada variable que existió, en el orden en que apareció
+function columnasHistorial() {
+  const columnas = [];
+  const vistas = new Set();
+  for (const p of pasos) {
+    for (const m of p.marcos) {
+      for (const v of m.vars) {
+        const clave = m.funcion + "." + v.nombre;
+        if (!vistas.has(clave)) { vistas.add(clave); columnas.push({ clave, funcion: m.funcion, nombre: v.nombre }); }
+      }
+    }
+  }
+  return columnas;
+}
+
+function valoresDelPaso(p) {
+  // en la recursión, la llamada más reciente de cada función
+  const valores = {};
+  for (const m of p.marcos) for (const v of m.vars) valores[m.funcion + "." + v.nombre] = v.valor;
+  return valores;
+}
+
+function dibujarHistorial() {
+  const columnas = columnasHistorial();
+  const multiplesFunciones = new Set(columnas.map((c) => c.funcion)).size > 1;
+  const cabeza = `<thead><tr><th>Paso</th><th>Línea</th>${columnas.map((c) =>
+    `<th>${escapar(c.nombre)}${multiplesFunciones && c.funcion !== "main" ? ` <small>(${escapar(c.funcion === "globales" ? "global" : c.funcion)})</small>` : ""}</th>`
+  ).join("")}<th>Salida</th></tr></thead>`;
+  let previos = {};
+  let salidaPrevia = "";
+  const filas = pasos.map((p, i) => {
+    const valores = valoresDelPaso(p);
+    const celdas = columnas.map((c) => {
+      const v = valores[c.clave];
+      const cambio = i > 0 && v !== undefined && v !== previos[c.clave];
+      return `<td class="${cambio ? "cambio" : ""}" title="${v === undefined ? "" : escapar(v)}">${v === undefined ? "" : escapar(v)}</td>`;
+    }).join("");
+    const nuevaSalida = p.salida.slice(salidaPrevia.length);
+    previos = valores;
+    salidaPrevia = p.salida;
+    const etiqueta = p.linea === null || p.error || p.fin || p.cortado ? (p.error ? "error" : "fin") : p.linea;
+    return `<tr data-paso="${i}"><td>${i + 1}</td><td>${etiqueta}</td>${celdas}<td>${escapar(JSON.stringify(nuevaSalida).slice(1, -1))}</td></tr>`;
+  }).join("");
+  $("historial").innerHTML = cabeza + `<tbody>${filas}</tbody>`;
+}
+
+function mostrar() {
+  const p = pasos[actual];
+  const previo = actual > 0 ? pasos[actual - 1] : null;
+  const esFinal = actual === pasos.length - 1;
+
+  document.querySelectorAll(".linea.actual, .linea.error").forEach((el) => el.classList.remove("actual", "error"));
+  if (p.linea) {
+    const el = $("l" + p.linea);
+    if (el) {
+      el.classList.add(p.error ? "error" : "actual");
+      el.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  $("contador").textContent = esFinal ? `Fin (${pasos.length - 1} pasos)` : `Paso ${actual + 1} de ${pasos.length - 1}`;
+  $("btnInicio").disabled = $("btnAtras").disabled = actual === 0;
+  $("btnPaso").disabled = $("btnFinal").disabled = esFinal;
+
+  dibujarVariables(p, previo);
+
+  const anterior = previo ? previo.salida : "";
+  const nueva = p.salida.slice(anterior.length);
+  $("salida").innerHTML = escapar(anterior) + (nueva ? `<span class="nuevo">${escapar(nueva)}</span>` : "");
+
+  const estado = $("estado");
+  estado.className = "oculto";
+  if (esFinal) {
+    if (p.error) {
+      estado.className = "error";
+      estado.textContent = (p.linea ? `Error en la línea ${p.linea}:\n` : "Error:\n") + p.error.replace(/^\d+:\d+ /, "");
+    } else if (p.cortado) {
+      estado.className = "error";
+      estado.textContent = `El programa tiene demasiados pasos; se muestran los primeros ${pasos.length - 1}. ¿Tiene un ciclo infinito?`;
+    } else {
+      estado.className = "fin";
+      estado.textContent = `El programa terminó (return ${p.codigoSalida}).`;
+    }
+  }
+
+  document.querySelectorAll("#historial tr.actual").forEach((tr) => tr.classList.remove("actual"));
+  const fila = document.querySelector(`#historial tr[data-paso="${actual}"]`);
+  if (fila) {
+    fila.classList.add("actual");
+    const caja = fila.closest(".historial");
+    const arriba = fila.offsetTop - caja.querySelector("thead").offsetHeight;
+    if (arriba < caja.scrollTop || fila.offsetTop + fila.offsetHeight > caja.scrollTop + caja.clientHeight) {
+      caja.scrollTop = arriba - caja.clientHeight / 3;
+    }
+  }
+}
+
+function irA(i) {
+  actual = Math.max(0, Math.min(pasos.length - 1, i));
+  mostrar();
+}
+
+// ---------- Eventos ----------
+
+function guardar() {
+  try {
+    localStorage.setItem("pasoapaso.codigo", $("codigo").value);
+    localStorage.setItem("pasoapaso.entrada", $("entrada").value);
+  } catch (e) { /* sin almacenamiento: no pasa nada */ }
+}
+
+function empezar() {
+  const codigo = $("codigo").value;
+  const entrada = $("entrada").value;
+  guardar();
+  const error = $("errorEditar");
+  error.classList.add("oculto");
+  try {
+    pasos = prepararPasos(codigo, entrada);
+  } catch (e) {
+    // el programa no se pudo leer (error de sintaxis o biblioteca que falta)
+    error.textContent = "No se pudo leer el programa:\n" + String(e.message || e).replace(/^ERROR: Parsing Failure:\n/, "");
+    error.classList.remove("oculto");
+    return;
+  }
+  dibujarCodigo(codigo);
+  dibujarHistorial();
+  $("editar").classList.add("oculto");
+  $("pasos").classList.remove("oculto");
+  irA(0);
+  $("btnPaso").focus();
+}
+
+function editar() {
+  $("pasos").classList.add("oculto");
+  $("editar").classList.remove("oculto");
+  $("codigo").focus();
+}
+
+$("btnEmpezar").addEventListener("click", empezar);
+$("btnEditar").addEventListener("click", editar);
+$("btnInicio").addEventListener("click", () => irA(0));
+$("btnAtras").addEventListener("click", () => irA(actual - 1));
+$("btnPaso").addEventListener("click", () => irA(actual + 1));
+$("btnFinal").addEventListener("click", () => irA(pasos.length - 1));
+
+// Correr hasta aquí: el siguiente paso que llega a esa línea
+$("vista").addEventListener("click", (e) => {
+  const num = e.target.closest(".num");
+  if (!num) return;
+  const linea = Number(num.dataset.linea);
+  const destino = pasos.findIndex((p, i) => i > actual && p.linea === linea);
+  irA(destino >= 0 ? destino : pasos.length - 1);
+});
+
+$("historial").addEventListener("click", (e) => {
+  const fila = e.target.closest("tr[data-paso]");
+  if (fila) irA(Number(fila.dataset.paso));
+});
+
+document.addEventListener("keydown", (e) => {
+  if ($("pasos").classList.contains("oculto") || e.target.tagName === "TEXTAREA") return;
+  const acciones = { ArrowRight: actual + 1, ArrowLeft: actual - 1, Home: 0, End: pasos.length - 1 };
+  if (e.key in acciones) {
+    e.preventDefault();
+    irA(acciones[e.key]);
+  }
+});
+
+// Tab en el editor escribe 4 espacios
+$("codigo").addEventListener("keydown", (e) => {
+  if (e.key !== "Tab") return;
+  e.preventDefault();
+  const t = e.target;
+  const inicio = t.selectionStart;
+  t.value = t.value.slice(0, inicio) + "    " + t.value.slice(t.selectionEnd);
+  t.selectionStart = t.selectionEnd = inicio + 4;
+});
+
+const selector = $("ejemplos");
+selector.innerHTML = `<option value="">Elegir…</option>` + Object.keys(EJEMPLOS).map((n) => `<option>${escapar(n)}</option>`).join("");
+selector.addEventListener("change", () => {
+  const ej = EJEMPLOS[selector.value];
+  if (!ej) return;
+  $("codigo").value = ej.codigo;
+  $("entrada").value = ej.entrada;
+  selector.value = "";
+  guardar();
+});
+
+let codigoGuardado = null;
+let entradaGuardada = null;
+try {
+  codigoGuardado = localStorage.getItem("pasoapaso.codigo");
+  entradaGuardada = localStorage.getItem("pasoapaso.entrada");
+} catch (e) { /* sin almacenamiento */ }
+const primero = EJEMPLOS["Suma de cifras (while)"];
+$("codigo").value = codigoGuardado || primero.codigo;
+$("entrada").value = entradaGuardada !== null && codigoGuardado ? entradaGuardada : primero.entrada;
+</script>
+</body>
+</html>

@@ -61,6 +61,8 @@ function run(code: string, input: string, config: JSCPPConfig): Debugger | numbe
     code = preprocessor.parse(rt, code);
 
     const mydebugger = new Debugger(code, oldCode);
+    // the preprocessor already loaded the #includes; the program's own globals come later
+    mydebugger.libraryGlobals = new Set(Object.keys(rt.scope[0].variables));
 
     const result = PEGUtil.parse(ast, code);
     if (result.error != null) {
