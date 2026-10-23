@@ -1,0 +1,2053 @@
+[
+  {
+    "tema": "bienvenida",
+    "nombre": "lección ambiente #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 20
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Hola-Mundo-c ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema GPCAB ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema GPCAB ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Tres-Numeros-Al-Reves ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema area_de_un_rectangulo ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema area_de_un_rectangulo ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema CR-Lectura-y-escritura ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema CR-Lectura-y-escritura ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Dolares ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Dolares ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Diferencia-de-productos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Diferencia-de-productos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Diferencia-de-productos ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Que-hora-es-en-segundos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Que-hora-es-en-segundos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Area-de-la-figura ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "problema Area-de-la-figura ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección hola-mundo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección cout #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección cout #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección variables #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección tipos #1",
+    "estado": "error",
+    "detalle": "overflow of 4000000000(int)",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección cin #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección cin #2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "lección primer-problema #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema A--B ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Area_Triangulo ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Area_Triangulo ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Area-de-un-Circulo---Ejemplo-1 ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Area-de-un-Circulo---Ejemplo-1 ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Cilindro ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Cilindro ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Contando-Monedas ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Contando-Monedas ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Repartiendo-cachorros ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Programando-formulas ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Porque-podemos-programar ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Evaluando-una-formula-gigante ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema La-hora-en-un-planeta-lejado ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "problema Sistemas-de-ecuaciones-1sol ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección aritmetica #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección division-residuo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección division-residuo #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección atajos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección decimales #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección decimales #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección decimales #3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección cmath #1",
+    "estado": "distinto",
+    "detalle": "g++: \"5.00\\n\"  JSCPP: \"1.00\\n\"",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "lección cmath #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema par_o_impar ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Es-Mayor-o-Menor-de-Edad ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Es-Mayor-o-Menor-de-Edad ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema MAYOR_DE_DOS ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema MAYOR_DE_DOS ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Que-mes-es ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Que-mes-es ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Estaciones ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Tipos-de-Triangulos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Tipos-de-Triangulos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Tipos-de-Triangulos ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Etapas-de-la-vida ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Etapas-de-la-vida ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Etapas-de-la-vida ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Etapas-de-la-vida ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Menor-y-mayor-de-tres-numeros ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Menor-y-mayor-de-tres-numeros ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Menor-y-mayor-de-tres-numeros ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Menor-y-mayor-de-tres-numeros ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Ano-Bisiesto ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Ano-Bisiesto ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Ano-Bisiesto ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Ano-Bisiesto ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Cuanto-Sacaste ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Fraccion-mixta ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema Fraccion-mixta ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "problema La-banda-robatamales ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección if #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección else #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección else #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección y-o-no #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección y-o-no #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección switch #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección switch #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección anidadas #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "lección anidadas #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema comi-Contando-a-Infinito ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema comi-Contando-a-Infinito ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema m3 ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Tabla-de-Multiplicar ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Imprime-pares-en-rango ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Imprime-pares-en-rango ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Imprime-pares-en-rango ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema ciclo_mientras_no_cero ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Bolsas-de-dulces ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Pares-e-impares ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Divisores-positivos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Divisores-positivos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Mensaje-de-Amor ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema A-pares-y-nones ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema A-pares-y-nones ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema A-pares-y-nones ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Apilando-Digitos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Apilando-Digitos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Calculando-el-logaritmo-base-2 ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Calculando-el-logaritmo-base-2 ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Calculando-el-logaritmo-base-2 ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Calculando-el-logaritmo-base-2 ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Calculando-el-logaritmo-base-2 ej5",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema CB-Intro-Factorial ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema CB-Intro-Factorial ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema CB-Intro-Factorial ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Suma-digitos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Suma-digitos ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Primo-o-no ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Primo-o-no ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Es-primo- ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Es-primo- ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Es-primo- ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "problema Es-primo- ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección while #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección for #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección muchos-datos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección muchos-datos #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección patrones #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección patrones #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección patrones #3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección do-while-break #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección do-while-break #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección do-while-break #3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección anidados #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "lección anidados #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Encuentra-el-mayor ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Reverso ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Suma-de-vectores ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Positivos-y-Negativos-ovi ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Positivos-y-Negativos-ovi ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Maximo-repetido ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Rango-simple ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Rango-simple ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Mayor-a-la-media ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Filtrando-multiplos ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema pb-Frecuencias ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema pb-Frecuencias ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema Girando-vector ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "problema arriba_del_promedio ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 8
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección que-es #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección que-es #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección recorrer #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección recorrer #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección conteo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección mover #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "lección mover #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema sumar-matrices ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 23
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Mayor-de-una-matriz- ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 37
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Mayor-de-una-matriz- ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 39
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Matriz ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Matriz-Espejo ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 12
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Matriz-Diagonal ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 13
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Matriz-X ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 14
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema Matrices-giradas ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "matrices",
+    "nombre": "problema buscaminas1 ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 43
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección que-es #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección que-es #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 13
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección recorridos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 18
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección recorridos #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección cuadriculas #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "matrices",
+    "nombre": "lección cuadriculas #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Suma-Impares ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Suma-Impares ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Pitagoras ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Pitagoras ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema La-esfera ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Numeros-Divisibles ej1",
+    "estado": "error",
+    "detalle": "no lo entiende: ios::sync_with_stdio(false);   // para leer un millón de números más rápido",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Numeros-Divisibles ej2",
+    "estado": "error",
+    "detalle": "no lo entiende: ios::sync_with_stdio(false);   // para leer un millón de números más rápido",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Sumatoria-Basica ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "problema Sumatoria-Basica ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección que-es #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección que-es #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección return #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección return #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 8
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección referencia #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección referencia #2",
+    "estado": "error",
+    "detalle": "no lo entiende: void intercambiar(int &a, int &b) {",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección referencia #3",
+    "estado": "error",
+    "detalle": "no lo entiende: void dividir(int a, int b, int &cociente, int &residuo) {",
+    "ms": 1
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección arreglos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "funciones",
+    "nombre": "lección recursion #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Bajando-los-caracteres ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 0
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Bajando-los-caracteres ej2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 0
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Reverse-String ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Reverse-String ej2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Aprendiendo-a-leer-cadenas ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Aprendiendo-a-leer-cadenas ej2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Consonantes-y-vocales ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Palabra-palindroma ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Validando-contrasena ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Invirtiendo-palabras ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Al-reves-20 ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema Al-reves-20 ej2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "problema aMAYUSCULAS ej1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección string #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección string #2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección caracteres #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección caracteres #2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección operaciones #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección getline #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "lección getline #2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Ordena-Basico-1 ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Ordena-Basico-1 ej2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Arreglo-de-mayor-a-menor ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Arreglo-de-mayor-a-menor ej2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Arreglo-de-mayor-a-menor ej3",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema abc ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema abc ej2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema lapizlazuli ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema lapizlazuli ej2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Consecutivos ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema ULAM-ordenado ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema PostesDF ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Valores-Repetidos ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Valores-Repetidos ej2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "problema Ordenando-por-cantidad-de-cifras ej1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección sort #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección sort #2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección ordenados #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección ordenados #2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección reglas #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "lección reglas #2",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 2
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema bebedor_refresco ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema bebedor_refresco ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema Carrera-de-Larga-Distancia ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema Saltando-por-el-arreglo-reloaded ej1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema Saltando-por-el-arreglo-reloaded ej2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema Saltando-por-el-arreglo-reloaded ej3",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "retos",
+    "nombre": "problema Saltando-por-el-arreglo-reloaded ej4",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 6
+  },
+  {
+    "tema": "retos",
+    "nombre": "lección simulacion #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "retos",
+    "nombre": "lección simulacion #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "retos",
+    "nombre": "lección rapidez #1",
+    "estado": "error",
+    "detalle": "no lo entiende: ios::sync_with_stdio(false);",
+    "ms": 2
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "referencia cout #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "referencia cin #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "entrada-salida",
+    "nombre": "referencia variables #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia division-residuo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia double #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia cmath #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia pi #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "referencia if #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "referencia else #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "referencia y-o-no #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "referencia switch #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia while #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia for #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia do-while-break #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia do-while-break #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia anidados #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia arreglo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "matrices",
+    "nombre": "referencia matriz #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 10
+  },
+  {
+    "tema": "funciones",
+    "nombre": "referencia funcion #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "funciones",
+    "nombre": "referencia return #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "referencia referencia-amp #1",
+    "estado": "error",
+    "detalle": "no lo entiende: void intercambiar(int &a, int &b) {",
+    "ms": 1
+  },
+  {
+    "tema": "funciones",
+    "nombre": "referencia arreglo-funcion #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "funciones",
+    "nombre": "referencia recursion #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia string #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia caracteres #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia cctype #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia getline #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "referencia sort #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "referencia min-max #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "referencia pair #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia es-par #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia es-multiplo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia digitos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia divisores #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia es-primo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "condicionales",
+    "nombre": "referencia bisiesto #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "operaciones",
+    "nombre": "referencia dos-decimales #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia leer-n-numeros #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia leer-hasta-cero #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia leer-arreglo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "matrices",
+    "nombre": "referencia leer-matriz #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 19
+  },
+  {
+    "tema": "matrices",
+    "nombre": "referencia leer-matriz #2",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia suma-promedio #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 4
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia contar #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 2
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia mayor-menor #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "ciclos",
+    "nombre": "referencia bandera #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia conteo #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia intercambiar #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 1
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia voltear-girar #1",
+    "estado": "error",
+    "detalle": "variable swap does not exist",
+    "ms": 3
+  },
+  {
+    "tema": "arreglos",
+    "nombre": "referencia voltear-girar #2",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 5
+  },
+  {
+    "tema": "matrices",
+    "nombre": "referencia vecinos #1",
+    "estado": "igual",
+    "detalle": "",
+    "ms": 3
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia recorrer-cadena #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia mayusculas #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "cadenas",
+    "nombre": "referencia palindromo #1",
+    "estado": "error",
+    "detalle": "cannot find library: string",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "referencia distintos #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  },
+  {
+    "tema": "ordenamiento",
+    "nombre": "referencia ordenar-reglas #1",
+    "estado": "error",
+    "detalle": "cannot find library: algorithm",
+    "ms": 1
+  }
+]
