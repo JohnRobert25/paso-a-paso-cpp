@@ -135,7 +135,8 @@
   #entradaVista .leido { color: var(--tenue); }
   #estado { padding: 10px 12px; border-radius: 6px; margin: 0; }
   #estado.fin { background: var(--cambio); color: var(--cambio-texto); }
-  #estado.error { background: var(--error); color: var(--error-texto); white-space: pre-wrap; font-family: var(--mono); font-size: 13px; }
+  #estado.error { background: var(--error); color: var(--error-texto); white-space: pre-wrap; }
+  code.cita { display: block; margin-top: 8px; font: 14px/1.5 var(--mono); white-space: pre; overflow-x: auto; }
   #historialPanel { grid-column: 1 / -1; }
   .historial { max-height: 40vh; overflow: auto; border: 1px solid var(--borde); border-radius: 6px; }
   .historial table { border-collapse: collapse; font: 13px var(--mono); min-width: 100%; }
@@ -178,7 +179,7 @@
         <select id="ejemplos"></select>
       </label>
     </div>
-    <p id="errorEditar" class="panel oculto" style="color: var(--error-texto); background: var(--error); white-space: pre-wrap; font-family: var(--mono); font-size: 13px; margin: 0;"></p>
+    <p id="errorEditar" class="panel oculto" style="color: var(--error-texto); background: var(--error); white-space: pre-wrap; margin: 0;"></p>
   </section>
 
   <section id="pasos" class="oculto">
@@ -218,6 +219,7 @@
 </main>
 
 <script src="jscpp.js"></script>
+<script src="mensajes.js"></script>
 <script>
 "use strict";
 
@@ -414,9 +416,9 @@ function prepararPasos(codigo, entrada) {
       if (++operaciones > MAX_OPERACIONES) { final.cortado = true; break; }
     }
   } catch (e) {
-    final.error = String(e.message || e);
-    const m = /^(\d+):(\d+) /.exec(final.error);
-    if (m) final.linea = Number(m[1]);
+    const { linea, texto } = explicarError(e.message || e, codigo);
+    final.error = texto;
+    final.linea = linea;
   }
   const ultimo = lista[lista.length - 1];
   lista.push({ ...final, marcos: ultimo ? ultimo.marcos : [], salida, leido: leido() });
@@ -427,6 +429,13 @@ function prepararPasos(codigo, entrada) {
 
 function escapar(s) {
   return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+// Un error explicado: "Error en la línea N:" (si el texto no la dice ya) y la línea de código citada en letra de código
+function htmlError(encabezado, linea, texto) {
+  const [explicacion, cita] = texto.split("\n\n    ");
+  const dice = linea && !explicacion.includes(`línea ${linea}`) ? `${encabezado} en la línea ${linea}: ` : "";
+  return escapar(dice + explicacion) + (cita ? `<code class="cita">${escapar(cita)}</code>` : "");
 }
 
 function dibujarCodigo(codigo) {
@@ -552,7 +561,7 @@ function mostrar() {
   if (esFinal) {
     if (p.error) {
       estado.className = "error";
-      estado.textContent = (p.linea ? `Error en la línea ${p.linea}:\n` : "Error:\n") + p.error.replace(/^\d+:\d+ /, "");
+      estado.innerHTML = htmlError("Error", p.linea, p.error);
     } else if (p.cortado) {
       estado.className = "error";
       estado.textContent = `El programa tiene demasiados pasos; se muestran los primeros ${pasos.length - 1}. ¿Tiene un ciclo infinito?`;
@@ -598,7 +607,8 @@ function empezar() {
     pasos = prepararPasos(codigo, entrada);
   } catch (e) {
     // el programa no se pudo leer (error de sintaxis o biblioteca que falta)
-    error.textContent = "No se pudo leer el programa:\n" + String(e.message || e).replace(/^ERROR: Parsing Failure:\n/, "");
+    const { linea, texto } = explicarError(e.message || e, codigo);
+    error.innerHTML = htmlError("Error", linea, texto);
     error.classList.remove("oculto");
     return;
   }

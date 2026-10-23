@@ -3,17 +3,30 @@
 // Uso: node paso-a-paso.js programa.cpp [entrada.in] [maxPasos]
 const fs = require("fs");
 const JSCPP = require("..");
+const explicarError = require("../pagina/mensajes.js");
 
 const codigo = fs.readFileSync(process.argv[2], "utf8");
 const entrada = process.argv[3] ? fs.readFileSync(process.argv[3], "utf8") : "";
 const maxPasos = Number(process.argv[4] || 500);
 const lineas = codigo.split(/\r?\n/);
 
+function mostrarError(e) {
+  const { linea, texto } = explicarError(e.message, codigo);
+  console.log(`\n${linea ? `Error en la línea ${linea}` : "Error"}: ${texto}`);
+}
+
 let salida = "";
-const dbg = JSCPP.run(codigo, entrada, {
-  debug: true,
-  stdio: { write: (s) => { salida += s; } },
-});
+let dbg;
+try {
+  dbg = JSCPP.run(codigo, entrada, {
+    debug: true,
+    stdio: { write: (s) => { salida += s; } },
+  });
+} catch (e) {
+  // no se pudo leer el programa (error de sintaxis, biblioteca que falta)
+  mostrarError(e);
+  process.exit(1);
+}
 // detenerse una vez por instrucción, no en cada parte de una expresión
 dbg.setStopConditions({ isStatement: true, positionChanged: true, lineChanged: false });
 
@@ -58,5 +71,5 @@ try {
   }
   console.log(fin ? `\nTerminó en ${paso} pasos. Salida completa:\n${salida}` : `\nSe cortó en ${maxPasos} pasos.`);
 } catch (e) {
-  console.log(`\nError: ${e.message}`);
+  mostrarError(e);
 }
