@@ -122,6 +122,9 @@ SelectionStatement
 IterationStatement
     = WHILE LPAR a:Expression RPAR b:Statement {return addPositionInfo({type:'IterationStatement_while', Expression:a, Statement:b});}
     / DO a:Statement WHILE LPAR b:Expression RPAR SEMI {return addPositionInfo({type:'IterationStatement_do', Expression:b, Statement:a});}
+    / FOR LPAR a:DeclarationSpecifiers b:Declarator COLON c:Expression RPAR d:Statement {
+      return addPositionInfo({type:'IterationStatement_range', DeclarationSpecifiers:a, Declarator:b, Expression:c, Statement:d});
+    }
     / FOR LPAR a:(Declaration/ExpressionStatement)? c:Expression? SEMI d:Expression? RPAR e:Statement {
       return addPositionInfo({type:'IterationStatement_for', Initializer:a, Expression:c, Loop:d, Statement:e});
     }
@@ -157,7 +160,7 @@ DeclarationSpecifiers
        / TypeQualifier
        / FunctionSpecifier
        )*
-       b:TypedefName
+       b:(TemplateType / TypedefName)
        c:( StorageClassSpecifier
        / TypeQualifier
        / FunctionSpecifier
@@ -183,13 +186,16 @@ InitDeclaratorList
     ;
 
 InitDeclarator
-    = a:Declarator b:(EQU x:Initializer {return x;})? {return addPositionInfo({type:'InitDeclarator', Declarator:a, Initializers:b});}
+    // string s(3, 'a'): constructor arguments
+    = a:Declarator LPAR b:ArgumentExpressionList RPAR {
+      return addPositionInfo({type:'InitDeclarator', Declarator:a, Initializers:addPositionInfo({type:'Initializer_args', args:b})});
+    }
+    / a:Declarator b:(EQU x:Initializer {return x;})? {return addPositionInfo({type:'InitDeclarator', Declarator:a, Initializers:b});}
     ;
 
 StorageClassSpecifier
     = a:(EXTERN
     / STATIC
-    / AUTO
     / REGISTER
     / ATTRIBUTE LPAR LPAR (!RPAR _)* RPAR RPAR) {
       return a;
@@ -197,7 +203,9 @@ StorageClassSpecifier
     ;
 
 TypeSpecifier
-    = a: (VOID
+    // auto x = 5: the type of the value (C++11), not the C storage class
+    = a: (AUTO
+    / VOID
     / CHAR
     / SHORT
     / INT
@@ -208,6 +216,7 @@ TypeSpecifier
     / UNSIGNED
     / BOOL
     / COMPLEX
+    / TemplateType
     / StructOrUnionSpecifier
     / EnumSpecifier) {
       return a;
@@ -233,13 +242,30 @@ StructDeclaration
     ;
 
 SpecifierQualifierList
-    = ( TypeQualifier*
-        TypedefName
-        TypeQualifier*
-      )
+    = a:TypeQualifier* b:(TemplateType / TypedefName) c:TypeQualifier* {
+      return a.concat([b]).concat(c);
+    }
     / ( TypeSpecifier
       / TypeQualifier
       )+
+    ;
+
+// Only the standard templates the interpreter knows, so that a < b > (c) stays a comparison.
+// The type becomes a name like "pair<int,string>" that the runtime instantiates.
+TemplateType
+    = SCOPEOP? (Identifier SCOPEOP)* a:TemplateName "<" Spacing b:TemplateArgument c:(COMMA x:TemplateArgument {return x;})* ">" Spacing {
+      return a + "<" + [b].concat(c).join(",") + ">";
+    }
+    ;
+
+TemplateName
+    = a:("pair" / "vector" / "greater" / "less") !IdChar Spacing {return a;}
+    ;
+
+TemplateArgument
+    = a:SpecifierQualifierList b:STAR* {
+      return a.filter(function (x) {return x !== "const";}).join(" ") + b.map(function () {return "*";}).join("");
+    }
     ;
 
 StructDeclaratorList
@@ -291,8 +317,9 @@ FunctionDirectDeclarator
     ;
 
 Declarator
-    = a:Pointer? b:DirectDeclarator {
+    = a:Pointer? r:AND? b:DirectDeclarator {
       b.Pointer = a;
+      b.Reference = r !== null;
       return b;
     }
     ;
@@ -385,7 +412,8 @@ DirectAbstractDeclarator
     ;
 
 TypedefName
-    = Identifier
+    // std::string is string: namespaces are not modeled
+    = SCOPEOP? (Identifier SCOPEOP)* a:Identifier {return a;}
     ;
 
 Initializer
@@ -403,8 +431,12 @@ InitializerList
 //-------------------------------------------------------------------------
 
 PrimaryExpression
+    // a temporary object: greater<int>(), pair<int, int>(1, 2)
+    = a:TemplateType LPAR b:ArgumentExpressionList? RPAR {return addPositionInfo({type:'TemporaryObject', TypeName:a, args:b || []});}
     // namespaces are not modeled (everything is global), so std::cin and ios::sync_with_stdio are cin and sync_with_stdio
-    = SCOPEOP? (Identifier SCOPEOP)* a:Identifier {return addPositionInfo({type:'IdentifierExpression', Identifier:a});}
+    // a functional cast: double(suma), int(c)
+    / a:(INT / DOUBLE / FLOAT / CHAR / LONG / SHORT / UNSIGNED / BOOL) LPAR b:Expression RPAR {return addPositionInfo({type:'TemporaryObject', TypeName:a, args:[b]});}
+    / SCOPEOP? (Identifier SCOPEOP)* a:Identifier {return addPositionInfo({type:'IdentifierExpression', Identifier:a});}
     / a:Constant {return addPositionInfo({type:'ConstantExpression', Expression:a});}
     / a:StringLiteral {return addPositionInfo({type:'StringLiteralExpression', value:a});}
     / LPAR a:Expression RPAR {return addPositionInfo({type:'ParenthesesExpression', Expression:a});}

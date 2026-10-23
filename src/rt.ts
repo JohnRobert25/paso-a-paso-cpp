@@ -58,7 +58,23 @@ export interface OpHandlerMap {
     cConstructor?: (rt: CRuntime, _this: Variable) => void;
     members?: Member[];
     father?: string;
+    // Library classes with value semantics (string, pair): a copy of the value for
+    // initialization and pass by value; without it objects are shared.
+    copy?: (rt: CRuntime, v: ObjectValue) => ObjectValue;
+    // Builds this class from another value (string s = "hola"), or returns undefined
+    convert?: (rt: CRuntime, value: Variable) => Variable | undefined;
+    // Which types convert implicitly when calling a function (a literal for a string parameter)
+    accepts?: (rt: CRuntime, type: VariableType) => boolean;
+    // Builds from a brace list or constructor arguments: pair<int, int> p = {1, 2}
+    construct?: (rt: CRuntime, args: Variable[]) => Variable;
+    // How the value looks in the debugger: "hola", {90, "Luis"}
+    display?: (rt: CRuntime, l: ObjectVariable) => string;
+    // The elements a range-based for goes through (the characters of a string)
+    elements?: (rt: CRuntime, l: ObjectVariable) => Variable[];
 };
+
+// Instantiates a library template (pair, greater...) for the given argument types
+export type TemplateFactory = (rt: CRuntime, name: string, args: VariableType[]) => void;
 
 export interface BoolType {
     type: "primitive";
@@ -221,7 +237,12 @@ export interface RuntimeScope {
     variables: {
         [name: string]: Variable;
     };
+    // names that are references to another variable (for the debugger)
+    references?: { [name: string]: true };
 }
+
+// int &a: "ref"; const string &s: "const" (it may also hold a copy of a temporary)
+export type Reference = "ref" | "const";
 
 export interface OptionalArg { name: string, type: VariableType, expression: any }
 
@@ -262,6 +283,7 @@ export class CRuntime {
     nullPointer: PointerVariable;
     scope: RuntimeScope[];
     typedefs: { [name: string]: VariableType };
+    templates: { [name: string]: TemplateFactory };
     interp: BaseInterpreter;
 
     constructor(config: JSCPPConfig) {
@@ -285,6 +307,7 @@ export class CRuntime {
         // nullptr is part of the language, not of a library
         this.scope = [{ "$name": "global", variables: { nullptr: this.nullPointer } }];
         this.typedefs = {};
+        this.templates = {};
     }
 
     include(name: string) {
@@ -293,7 +316,7 @@ export class CRuntime {
         } = this.config;
         if (name in includes) {
             const lib = includes[name];
-            if (this.config.loadedLibraries.includes(name)) {
+            if (this.config.loadedLibraries.some((loaded) => includes[loaded] === lib)) {
                 return;
             }
             this.config.loadedLibraries.push(name);
@@ -349,6 +372,7 @@ export class CRuntime {
                     if (lv.members.hasOwnProperty(r)) {
                         return lv.members[r];
                     }
+                    this.raiseException(this.makeTypeString(lt) + " has no member " + r);
                 }
             } else {
                 this.raiseException("type " + this.makeTypeString(lt) + " is unknown");
@@ -358,13 +382,17 @@ export class CRuntime {
         }
     };
 
-    defFunc(lt: VariableType, name: string, retType: VariableType, argTypes: VariableType[], argNames: string[], stmts: any, interp: Interpreter, optionalArgs: OptionalArg[]) {
+    defFunc(lt: VariableType, name: string, retType: VariableType, argTypes: VariableType[], argNames: string[], stmts: any, interp: Interpreter, optionalArgs: OptionalArg[], argRefs: Reference[] = []) {
         if (stmts != null) {
             const f = function* (rt: CRuntime, _this: Variable, ...args: Variable[]) {
                 // logger.warn("calling function: %j", name);
                 rt.enterScope("function " + name);
                 argNames.forEach(function (argName, i) {
-                    rt.defVar(argName, argTypes[i], args[i]);
+                    if (argRefs[i]) {
+                        rt.defRef(argName, argTypes[i], args[i], argRefs[i]);
+                    } else {
+                        rt.defVar(argName, argTypes[i], args[i]);
+                    }
                 });
                 for (let i = 0, end = optionalArgs.length; i < end; i++) {
                     const optionalArg = optionalArgs[i];
@@ -452,7 +480,9 @@ export class CRuntime {
                                 i++;
                             }
                             while (ok && (i < newTs.length)) {
-                                ok = this.castable(newTs[i], optionalArgs[i - newDts.length].type);
+                                // more arguments than this overload takes
+                                const optionalArg = optionalArgs[i - newDts.length];
+                                ok = optionalArg !== undefined && this.castable(newTs[i], optionalArg.type);
                                 i++;
                             }
                             if (ok) {
@@ -737,6 +767,25 @@ export class CRuntime {
         }
     };
 
+    // int &a = x: the name refers to the same variable, so changes reach the caller.
+    // A const reference to a temporary (const string &s = "hola") keeps a copy.
+    defRef(varname: string, type: VariableType, target: Variable, kind: Reference) {
+        if (target.left && this.isTypeEqualTo(type, target.t)) {
+            if (this.varAlreadyDefined(varname)) {
+                this.raiseException("variable " + varname + " already defined");
+            }
+            const scope = this.scope[this.scope.length - 1];
+            scope.variables[varname] = target;
+            scope.references = { ...scope.references, [varname]: true };
+        } else if (kind === "const") {
+            this.defVar(varname, type, target);
+        } else if (!target.left) {
+            this.raiseException("reference " + varname + " needs a variable, not the value " + this.makeValueString(target));
+        } else {
+            this.raiseException("reference " + varname + " of type " + this.makeTypeString(type) + " cannot refer to a variable of type " + this.makeTypeString(target.t));
+        }
+    };
+
     booleanToNumber(b: BasicValue) {
         if (typeof (b) === "boolean") {
             return b ? 1 : 0;
@@ -784,19 +833,42 @@ export class CRuntime {
     }
 
     // Brings an integer back into its type's range modulo 2^bits, as two's complement does
+    // A double holds integers exactly only up to 2^53. The largest 64-bit values round up:
+    // 2^64 stands for 18446744073709551615 (ULLONG_MAX, string::npos) and is never a value of its own.
     wrapInteger(type: VariableType, value: BasicValue) {
         value = this.booleanToNumber(value);
         if (this.isIntegerType(type) && type.name !== "bool" && Number.isFinite(value)) {
             const limit = this.config.limits[type.name];
-            const period = limit.max - limit.min + 1;
-            if (value < limit.min) {
-                value += period * Math.ceil((limit.min - value) / period);
+            if (value >= limit.min && value <= limit.max) {
+                return value;
             }
-            if (value > limit.max) {
-                value = ((value - limit.min) % period) + limit.min;
+            const ULLONG_MAX = (BigInt(1) << BigInt(64)) - BigInt(1);
+            const exact = value === Math.pow(2, 64) ? ULLONG_MAX
+                : Number.isSafeInteger(value) ? BigInt(value) : null;
+            if (exact === null) {
+                this.raiseException(`the value ${this.formatInteger(type, value)} is too large for this interpreter (over 2^53)`);
+            }
+            const period = BigInt(1) << BigInt(8 * limit.bytes);
+            const min = BigInt(limit.min);
+            const wrapped = ((exact - min) % period + period) % period + min;
+            value = Number(wrapped);
+            if (BigInt(value) !== wrapped && wrapped !== ULLONG_MAX) {
+                this.checkExactInteger(value, () => wrapped);
             }
         }
         return value;
+    };
+
+    // The digits of an integer value; see wrapInteger for the largest 64-bit values
+    formatInteger(type: VariableType, value: number) {
+        if (Number.isSafeInteger(value) || !Number.isFinite(value)) {
+            return String(value);
+        }
+        if (type.type === "primitive" && value === this.config.limits[type.name]?.max) {
+            const bits = 8 * this.config.limits[type.name].bytes - (this.isUnsignedType(type) ? 0 : 1);
+            return ((BigInt(1) << BigInt(bits)) - BigInt(1)).toString();
+        }
+        return BigInt(value).toString();
     };
 
     isNumericType(type: VariableType): type is PrimitiveType;
@@ -881,8 +953,9 @@ export class CRuntime {
                 return this.isPointerType(type2);
             }
             return !this.isFunctionType(type2);
-        } else if (this.isClassType(type1) || this.isClassType(type2)) {
-            this.raiseException("not implemented");
+        } else if (this.isClassType(type2)) {
+            const accepts = this.types[this.getTypeSignature(type2)]?.accepts;
+            return accepts ? accepts(this, type1) : false;
         }
         return false;
     };
@@ -999,7 +1072,12 @@ export class CRuntime {
                 this.raiseException("cannot cast a regular pointer to a function");
             }
         } else if (this.isClassType(type)) {
-            this.raiseException("not implemented");
+            const convert = this.types[this.getTypeSignature(type)]?.convert;
+            const converted = convert && convert(this, value);
+            if (converted) {
+                return converted;
+            }
+            this.raiseException("cannot convert " + this.makeValString(value) + " to " + this.makeTypeString(type));
         } else if (this.isClassType(value.t)) {
             value = this.getCompatibleFunc(value.t, this.makeOperatorFuncName(type.name), [])(this, value);
             return value;
@@ -1009,6 +1087,12 @@ export class CRuntime {
     };
 
     clone(v: Variable, isInitializing?: boolean) {
+        if (this.isClassType(v)) {
+            const copy = this.types[this.getTypeSignature(v.t)]?.copy;
+            if (copy) {
+                return this.val(v.t, copy(this, v.v), false);
+            }
+        }
         return this.val(v.t, v.v, false, isInitializing);
     };
 
@@ -1260,6 +1344,8 @@ export class CRuntime {
         } else {
             if (this.isPrimitiveType(type)) {
                 return this.primitiveType(type);
+            } else if (type.includes("<")) {
+                return this.templateType(type);
             } else {
                 const clsType: ClassType = {
                     type: "class",
@@ -1272,6 +1358,39 @@ export class CRuntime {
                 }
             }
         }
+    };
+
+    // "pair<int,string>" -> the class for those arguments, created the first time it is used
+    templateType(typeName: string): ClassType {
+        const m = /^(\w+)<(.*)>$/.exec(typeName);
+        if (!m || !(m[1] in this.templates)) {
+            this.raiseException("type " + typeName + " is not defined");
+        }
+        const args: VariableType[] = [];
+        let depth = 0;
+        let start = 0;
+        const text = m[2] + ",";
+        for (let i = 0; i < text.length; i++) {
+            if (text[i] === "<") { depth++; }
+            if (text[i] === ">") { depth--; }
+            if (text[i] === "," && depth === 0) {
+                const arg = text.slice(start, i).trim();
+                const stars = /\**$/.exec(arg)[0].length;
+                const words = arg.slice(0, arg.length - stars).trim();
+                let t = words.includes("<") ? this.templateType(words) : this.simpleType(words.split(/ +/));
+                for (let j = 0; j < stars; j++) {
+                    t = this.normalPointerType(t);
+                }
+                args.push(t);
+                start = i + 1;
+            }
+        }
+        const name = m[1] + "<" + args.map((t) => this.makeTypeString(t)).join(",") + ">";
+        const type: ClassType = { type: "class", name };
+        if (!(this.getTypeSignature(type) in this.types)) {
+            this.templates[m[1]](this, name, args);
+        }
+        return type;
     };
 
     newClass(classname: string, members: Member[]) {
@@ -1421,6 +1540,8 @@ export class CRuntime {
                 display = "'" + String.fromCharCode(l.v as number) + "'";
             } else if (this.isBoolType(l.t)) {
                 display = l.v !== 0 ? "true" : "false";
+            } else if (this.isIntegerType(l.t)) {
+                display = this.formatInteger(l.t, l.v as number);
             } else {
                 display = l.v.toString();
             }
@@ -1452,7 +1573,8 @@ export class CRuntime {
                 this.raiseException("unknown pointer type");
             }
         } else if (this.isClassType(l)) {
-            display = "<object>";
+            const show = this.types[this.getTypeSignature(l.t)]?.display;
+            display = show ? show(this, l) : "<object>";
         }
         return display;
     };

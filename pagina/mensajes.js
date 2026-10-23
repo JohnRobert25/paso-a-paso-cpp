@@ -64,6 +64,59 @@
       `El índice ${m[1]} se sale del arreglo: tiene ${m[2]} casillas, de la 0 a la ${Number(m[2]) - 1}.`],
     [/negative index (-?\d+)/, (m) =>
       `El índice ${m[1]} es negativo: las casillas de un arreglo empiezan en 0.`],
+    [/string index (-?\d+) out of range: size (\d+)/, (m) => Number(m[2]) === 0
+      ? `La posición ${m[1]} no existe: la cadena está vacía.`
+      : `La posición ${m[1]} se sale de la cadena: tiene ${m[2]} letras, de la 0 a la ${Number(m[2]) - 1}.`],
+    [/(\w+): position (-?\d+) is past the end of the string \(size (\d+)\)/, (m) =>
+      `En ${m[1]}, la posición ${m[2]} está después del final de la cadena, que tiene ${m[3]} letras.`],
+    [/(pop_back|back|front) on an empty string/, (m) =>
+      `La cadena está vacía: ${m[1] === "pop_back" ? "no hay letra que quitar" : `no tiene ${m[1] === "back" ? "última" : "primera"} letra`}.`],
+    [/reference (\w+) needs a variable, not the value (.+)/, (m) =>
+      `«${m[1]}» es una referencia (&): hay que darle una variable, no un valor como ${m[2]}.`],
+    [/reference (\w+) needs a variable to refer to/, (m) =>
+      `«${m[1]}» es una referencia (&): hay que decir a qué variable se refiere, por ejemplo int &${m[1]} = x;`],
+    [/reference (\w+) of type (.+) cannot refer to a variable of type (.+)/, (m) =>
+      `La referencia «${m[1]}» es de tipo ${m[2]} y no puede ser otro nombre de una variable de tipo ${m[3]}.`],
+    [/(min|max) needs two values of the same type, not (.+) and (.+)/, (m) =>
+      `${m[1]} necesita dos valores del mismo tipo, pero recibió ${m[2]} y ${m[3]}. Por ejemplo, si x es long long, escribe ${m[1]}(x, 0LL) en vez de ${m[1]}(x, 0).`],
+    [/(min|max) takes two values/, (m) =>
+      `${m[1]} compara dos valores: ${m[1]}(a, b).`],
+    [/the comparison function is not valid for sort/, () =>
+      "La función de comparación de sort debe usar < o >, nunca <= ni >=: cuando dos valores son iguales tiene que responder false."],
+    [/the comparison function must return true or false/, () =>
+      "La función de comparación debe devolver true o false (bool)."],
+    [/(\w+) needs a range such as/, (m) =>
+      `${m[1]} necesita un rango: el principio y el final, como ${m[1]}(a, a + n) o ${m[1]}(s.begin(), s.end()).`],
+    [/(\w+): the range \[(-?\d+), (-?\d+)\) goes outside the array of (\d+) elements/, (m) =>
+      `${m[1]}: el rango de la casilla ${m[2]} a la ${m[3]} se sale del arreglo, que tiene ${m[4]} casillas.`],
+    [/(\w+): the range ends \((-?\d+)\) before it begins \((-?\d+)\)/, (m) =>
+      `${m[1]}: el rango termina (${m[2]}) antes de empezar (${m[3]}). ¿Pusiste el final primero?`],
+    [/(\w+): the beginning and the end of the range are in different arrays/, (m) =>
+      `${m[1]}: el principio y el final del rango son de arreglos distintos.`],
+    [/(\w+): the third argument must be a comparison function/, (m) =>
+      `${m[1]}: lo tercero debe ser una función de comparación, como ${m[1]}(a, a + n, antes).`],
+    [/(sto\w+): "(.*)" does not start with a number/, (m) =>
+      `${m[1]} no encontró un número al principio de "${m[2]}".`],
+    [/(sto\w+): (\S+) does not fit in (.+)/, (m) =>
+      `${m[1]}: el número ${m[2]} no cabe en un ${m[3]}.`],
+    [/swap needs two variables of the same type, not (.+) and (.+)/, (m) =>
+      `swap necesita dos variables del mismo tipo, pero recibió ${m[1]} y ${m[2]}.`],
+    [/swap needs two variables/, () =>
+      "swap intercambia dos variables: swap(a, b)."],
+    [/auto needs an initial value/, () =>
+      "Con auto hay que dar un valor inicial, para saber de qué tipo es: auto x = 5;"],
+    [/cannot go through the elements of (.+) with for \( : \)/, (m) =>
+      `No se puede recorrer un ${m[1]} con for ( : ). Funciona con arreglos y cadenas.`],
+    [/(\S+) has no member (\w+)/, (m) =>
+      `${m[1]} no tiene ningún «${m[2]}».${m[1].startsWith("pair") ? " Un pair tiene first y second." : ""}`],
+    [/a string cannot be compared with (\S+) to (.+)/, (m) =>
+      `Una cadena no se puede comparar con ${m[1]} contra un ${m[2]}.${m[2] === "char" ? " Para un carácter usa comillas dobles: s == \"a\", o compara una letra: s[0] == 'a'." : ""}`],
+    [/(\S+) needs a string or a char, not (.+)/, (m) =>
+      `${m[1]} necesita una cadena o un carácter, no un ${m[2]}.`],
+    [/cannot convert (.+)\((.+)\) to string/, (m) =>
+      `No se puede convertir el valor ${m[1]} (${m[2]}) en string. Para un número usa to_string.`],
+    [/type vector<.*> is not defined|cannot find library: vector/, () =>
+      "El paso a paso todavía no conoce vector. Con Ejecutar sí funciona."],
     [/NaN|uninitialized value/, () =>
       "Se usó una variable que todavía no tiene valor. En C++ tendría basura: dale un valor antes de usarla (por ejemplo, int suma = 0;)."],
     [/division by zero/, () =>
@@ -81,8 +134,8 @@
       `La función ${m[1]} terminó sin llegar a un return: debe devolver un valor en todos los casos.`],
     [/you cannot return a value from a void function/, () =>
       "Una función void no devuelve nada: usa solo return; o cambia void por el tipo que devuelve."],
-    [/the exact result (\S+) is too large/, (m) =>
-      `El resultado exacto (${m[1]}) es demasiado grande para el paso a paso, que solo calcula exacto hasta 9007199254740991. Con Ejecutar sí funciona.`],
+    [/the (?:exact result|value) (\S+) is too large/, (m) =>
+      `El valor exacto (${m[1]}) es demasiado grande para el paso a paso, que solo calcula exacto hasta 9007199254740991. Con Ejecutar sí funciona.`],
     [/(?:function|method) (\w+) does not seem to be implemented/, (m) =>
       `La función ${m[1]} está declarada pero no tiene cuerpo { … }.`],
     [/no method (\w+) in .* accepts/, (m) =>

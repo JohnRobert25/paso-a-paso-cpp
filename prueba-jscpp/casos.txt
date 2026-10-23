@@ -581,3 +581,256 @@ int main() {
     cout << "\n";
     return 0;
 }
+=== 45_string_metodos | 2
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+    string s = "programacion";
+    cout << s.substr(3) << " " << s.substr(0, 4) << " " << s.substr(8, 100) << "\n";
+    cout << s.find("gra") << " " << s.find('a') << " " << s.find('a', 6) << " " << s.rfind('a') << "\n";
+    if (s.find("xyz") == string::npos) cout << "no esta\n";
+    s.insert(0, "la ");
+    s.erase(3, 4);
+    s.replace(0, 2, "LA");
+    s.append("!");
+    s.push_back('?');
+    cout << s << " " << s.size() << " " << s.length() << " " << s.back() << s.front() << "\n";
+    s.pop_back();
+    string t = "abc";
+    cout << (t < "abd") << (t == "abc") << ("abc" == t) << (t != s) << (t > "ab") << "\n";
+    string u = "x" + t + 'y' + "z";
+    cout << u << " " << u.at(1) << " " << u.empty() << "\n";
+    u.clear();
+    cout << u.empty() << "[" << u << "]\n";
+    cout << to_string(42) + "-" + to_string(-7) << " " << stoi("  123abc") + 1 << "\n";
+    string v(3, 'k');
+    cout << v << "\n";
+    return 0;
+}
+=== 46_string_valor | 2
+#include <iostream>
+#include <string>
+using namespace std;
+string duplica(string s) {
+    s += s;
+    return s;
+}
+void agrega(string &s) {
+    s += "!";
+}
+int main() {
+    string a = "hola";
+    string b = a;
+    b[0] = 'H';
+    cout << a << " " << b << "\n";
+    string c = duplica(a);
+    cout << a << " " << c << "\n";
+    agrega(a);
+    cout << a << "\n";
+    string nombres[3] = {"Ana", "Luis", "Eva"};
+    swap(nombres[0], nombres[2]);
+    for (int i = 0; i < 3; i++) cout << nombres[i] << " ";
+    cout << "\n";
+    string d;
+    d = a;
+    a[0] = 'X';
+    cout << a << " " << d << "\n";
+    return 0;
+}
+=== 47_referencias | 2
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+void incrementa(int &x) { x++; }
+void ordena(int &a, int &b) {
+    if (a > b) {
+        int t = a;
+        a = b;
+        b = t;
+    }
+}
+int largo(const string &s) { return s.size(); }
+int main() {
+    int a[3] = {5, 9, 1};
+    incrementa(a[1]);
+    ordena(a[0], a[2]);
+    cout << a[0] << " " << a[1] << " " << a[2] << "\n";
+    int &r = a[2];
+    r = 100;
+    cout << a[2] << " " << largo("cinco") << "\n";
+    string s = "hola mundo";
+    for (char &c : s) c = toupper(c);
+    cout << s << "\n";
+    return 0;
+}
+=== 48_pair_sort | 2
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+bool porCalificacion(pair<int, string> a, pair<int, string> b) {
+    return a.first > b.first;
+}
+int main() {
+    pair<int, string> p[20];
+    string nombres[5] = {"Ana", "Beto", "Caro", "Dani", "Eva"};
+    for (int i = 0; i < 20; i++) {
+        p[i].first = (i * 7) % 4;
+        p[i].second = nombres[i % 5] + to_string(i);
+    }
+    sort(p, p + 20, porCalificacion);
+    for (int i = 0; i < 20; i++) cout << p[i].first << p[i].second << " ";
+    cout << "\n";
+    sort(p, p + 20);
+    for (int i = 0; i < 20; i++) cout << p[i].first << p[i].second << " ";
+    cout << "\n";
+    pair<int, int> q = make_pair(3, 4);
+    pair<int, int> w = {3, 2};
+    cout << (w < q) << " " << q.first + q.second << "\n";
+    int a[6] = {4, 1, 6, 2, 9, 3};
+    sort(a, a + 6, greater<int>());
+    for (int i = 0; i < 6; i++) cout << a[i] << " ";
+    cout << "\n";
+    string s = "murcielago";
+    sort(s.begin(), s.end());
+    cout << s << "\n";
+    return 0;
+}
+=== 49_sort_grande_inestable | 2
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int a[300];
+bool porUltimaCifra(int x, int y) { return x % 10 < y % 10; }
+int main() {
+    unsigned int semilla = 12345;
+    for (int i = 0; i < 300; i++) {
+        semilla = semilla * 1103515245u + 12345u;
+        a[i] = (semilla / 65536) % 1000;
+    }
+    sort(a, a + 300, porUltimaCifra);
+    for (int i = 0; i < 300; i++) cout << a[i] << " ";
+    cout << "\n";
+    sort(a, a + 300);
+    for (int i = 0; i < 300; i += 10) cout << a[i] << " ";
+    cout << "\n";
+    return 0;
+}
+=== 50_algoritmos | 2
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+int main() {
+    int a[10] = {5, 3, 8, 3, 1, 8, 8, 2, 9, 3};
+    cout << *max_element(a, a + 10) << " " << max_element(a, a + 10) - a << " " << min_element(a, a + 10) - a << "\n";
+    cout << count(a, a + 10, 8) << " " << find(a, a + 10, 1) - a << "\n";
+    reverse(a, a + 10);
+    for (int i = 0; i < 10; i++) cout << a[i] << " ";
+    cout << "\n";
+    sort(a, a + 10);
+    int n = unique(a, a + 10) - a;
+    for (int i = 0; i < n; i++) cout << a[i] << " ";
+    cout << "\n";
+    cout << lower_bound(a, a + n, 4) - a << " " << upper_bound(a, a + n, 3) - a << " " << binary_search(a, a + n, 8) << binary_search(a, a + n, 7) << "\n";
+    int p[3] = {1, 2, 3};
+    do {
+        cout << p[0] << p[1] << p[2] << " ";
+    } while (next_permutation(p, p + 3));
+    cout << "\n";
+    cout << __gcd(12, 18) << " " << max(string("pera"), string("manzana")) << " " << min(7, -2) << "\n";
+    fill(a, a + 3, 0);
+    stable_sort(a, a + 10);
+    for (int i = 0; i < 10; i++) cout << a[i] << " ";
+    cout << "\n";
+    return 0;
+}
+=== 51_getline_mezcla | 2
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    cin.ignore();
+    string linea;
+    getline(cin, linea);
+    cout << n << ":" << linea << "\n";
+    string nombre, ciudad;
+    getline(cin, nombre, ',');
+    getline(cin, ciudad);
+    cout << nombre << "|" << ciudad << "\n";
+    string palabra;
+    int k = 0;
+    while (cin >> palabra) k++;
+    cout << k << " palabras\n";
+    return 0;
+}
+--- in
+3
+uno dos tres
+Ana Ruiz,Monterrey
+a b c
+d e
+=== 52_range_for | 2
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+    int a[5] = {1, 2, 3, 4, 5};
+    int suma = 0;
+    for (int x : a) suma += x;
+    for (int &x : a) x *= 2;
+    for (auto x : a) cout << x << " ";
+    cout << suma << "\n";
+    string s = "abc";
+    for (auto c : s) cout << (int)c << " ";
+    cout << "\n";
+    for (char c : s) {
+        if (c == 'b') continue;
+        cout << c;
+    }
+    cout << "\n";
+    return 0;
+}
+=== 53_npos_y_tamano | 2
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+    string s = "banana";
+    int pos = s.find('z');
+    cout << pos << "\n";
+    cout << (int)s.find("na") << " " << s.find("na", 3) << "\n";
+    cout << s.size() - 2 << "\n";
+    int vocales = 0;
+    for (int i = 0; i < (int)s.size(); i++) if (s[i] == 'a') vocales++;
+    cout << s.size() - vocales << "\n";
+    return 0;
+}
+=== 54_caracteres_en_string | 2
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+int main() {
+    string s;
+    cin >> s;
+    int veces[26] = {0};
+    string mayus = "";
+    for (int i = 0; i < (int)s.size(); i++) {
+        veces[s[i] - 'a']++;
+        mayus += (char)toupper(s[i]);
+        mayus += s[i] - 32;
+    }
+    cout << mayus << "\n";
+    for (int k = 0; k < 26; k++) if (veces[k]) cout << (char)('a' + k) << veces[k];
+    cout << "\n";
+    s[0] = s[0] + 1;
+    cout << s << " " << s[0] << s[s.size() - 1] << "\n";
+    return 0;
+}
+--- in
+abracadabra

@@ -180,10 +180,20 @@ function bitwise64(a: number, b: number, op: (x: number, y: number) => number) {
 }
 
 // Integer results past 2^53 may have lost digits: check them against BigInt
-function checkExact(rt: CRuntime, rett: VariableType, ret: number, a: number, b: number, op: (x: bigint, y: bigint) => bigint) {
-    if (rt.isIntegerType(rett)) {
-        rt.checkExactInteger(ret, () => op(BigInt(a), BigInt(b)));
+// Past 2^53 a double loses the last digits. Types of up to 32 bits wrap around anyway, so their
+// result is computed exactly (seed * 1103515245u); 64-bit ones stop rather than continue wrong.
+function exactInteger(rt: CRuntime, rett: VariableType, ret: number, a: number, b: number, op: (x: bigint, y: bigint) => bigint) {
+    if (rt.isIntegerType(rett) && rett.name !== "bool" && Number.isFinite(ret) && !Number.isSafeInteger(ret)) {
+        const exact = op(BigInt(a), BigInt(b));
+        const limit = rt.config.limits[rett.name];
+        if (limit.bytes <= 4) {
+            const period = BigInt(1) << BigInt(8 * limit.bytes);
+            const min = BigInt(limit.min);
+            return Number(((exact - min) % period + period) % period + min);
+        }
+        rt.checkExactInteger(ret, () => exact);
     }
+    return ret;
 }
 
 const defaultOpHandler: OpHandlerMap = {
@@ -195,9 +205,9 @@ const defaultOpHandler: OpHandlerMap = {
                 } else if (!rt.isNumericType(l)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support * on " + rt.makeTypeString(r.t));
                 } else {
-                    const ret = rt.booleanToNumber(l.v) * rt.booleanToNumber(r.v);
+                    let ret = rt.booleanToNumber(l.v) * rt.booleanToNumber(r.v);
                     const rett = rt.promoteNumeric(l.t, r.t);
-                    checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x * y);
+                    ret = exactInteger(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x * y);
                     return rt.val(rett, ret);
                 }
             }
@@ -218,7 +228,7 @@ const defaultOpHandler: OpHandlerMap = {
                         ret = Math.trunc(ret);
                     }
                     const rett = rt.promoteNumeric(l.t, r.t);
-                    checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x / y);
+                    ret = exactInteger(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x / y);
                     return rt.val(rett, ret);
                 }
             }
@@ -248,9 +258,9 @@ const defaultOpHandler: OpHandlerMap = {
                     } else if (!rt.isNumericType(l) || !rt.isNumericType(r)) {
                         rt.raiseException(rt.makeTypeString(l.t) + " does not support + on " + rt.makeTypeString(r.t));
                     } else {
-                        const ret = rt.booleanToNumber(l.v) + rt.booleanToNumber(r.v);
+                        let ret = rt.booleanToNumber(l.v) + rt.booleanToNumber(r.v);
                         const rett = rt.promoteNumeric(l.t, r.t);
-                        checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x + y);
+                        ret = exactInteger(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x + y);
                         return rt.val(rett, ret);
                     }
                 }
@@ -268,9 +278,9 @@ const defaultOpHandler: OpHandlerMap = {
                     if (!rt.isNumericType(l) || !rt.isNumericType(r)) {
                         rt.raiseException(rt.makeTypeString(l.t) + " does not support - on " + rt.makeTypeString(r.t));
                     } else {
-                        const ret = rt.booleanToNumber(l.v) - rt.booleanToNumber(r.v);
+                        let ret = rt.booleanToNumber(l.v) - rt.booleanToNumber(r.v);
                         rett = rt.promoteNumeric(l.t, r.t);
-                        checkExact(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x - y);
+                        ret = exactInteger(rt, rett, ret, rt.booleanToNumber(l.v), rt.booleanToNumber(r.v), (x, y) => x - y);
                         return rt.val(rett, ret);
                     }
                 }
@@ -614,7 +624,8 @@ types["pointer"] = {
         },
         "o(!=)": {
             default(rt, l, r) {
-                return !rt.types["pointer"].handlers["=="].default(rt, l, r);
+                const equal = rt.types["pointer"].handlers["o(==)"].default(rt, l, r);
+                return rt.val(rt.boolTypeLiteral, !equal.v);
             }
         },
         "o(,)": {
@@ -774,7 +785,8 @@ types["pointer_array"] = {
                         return rt.val(l.t, rt.makeArrayPointerValue(l.v.target, l.v.position - i));
                     } else if (rt.isArrayType(r)) {
                         if (l.v.target === r.v.target) {
-                            return l.v.position - r.v.position;
+                            // ptrdiff_t: max_element(a, a + n) - a
+                            return rt.val(rt.primitiveType("long long"), l.v.position - r.v.position);
                         } else {
                             rt.raiseException("you cannot perform minus on pointers pointing to different arrays");
                         }
@@ -790,7 +802,7 @@ types["pointer_array"] = {
             default(rt, l, r) {
                 if (rt.isArrayType(l) && rt.isArrayType(r)) {
                     if (l.v.target === r.v.target) {
-                        return l.v.position < r.v.position;
+                        return rt.val(rt.boolTypeLiteral, l.v.position < r.v.position);
                     } else {
                         rt.raiseException("you cannot perform compare on pointers pointing to different arrays");
                     }
@@ -803,7 +815,7 @@ types["pointer_array"] = {
             default(rt, l, r) {
                 if (rt.isArrayType(l) && rt.isArrayType(r)) {
                     if (l.v.target === r.v.target) {
-                        return l.v.position > r.v.position;
+                        return rt.val(rt.boolTypeLiteral, l.v.position > r.v.position);
                     } else {
                         rt.raiseException("you cannot perform compare on pointers pointing to different arrays");
                     }
@@ -816,7 +828,7 @@ types["pointer_array"] = {
             default(rt, l, r) {
                 if (rt.isArrayType(l) && rt.isArrayType(r)) {
                     if (l.v.target === r.v.target) {
-                        return l.v.position <= r.v.position;
+                        return rt.val(rt.boolTypeLiteral, l.v.position <= r.v.position);
                     } else {
                         rt.raiseException("you cannot perform compare on pointers pointing to different arrays");
                     }
@@ -829,7 +841,7 @@ types["pointer_array"] = {
             default(rt, l, r) {
                 if (rt.isArrayType(l) && rt.isArrayType(r)) {
                     if (l.v.target === r.v.target) {
-                        return l.v.position >= r.v.position;
+                        return rt.val(rt.boolTypeLiteral, l.v.position >= r.v.position);
                     } else {
                         rt.raiseException("you cannot perform compare on pointers pointing to different arrays");
                     }
@@ -851,13 +863,13 @@ types["pointer_array"] = {
         "o(+=)": {
             default(rt, l, r) {
                 r = rt.types["pointer_array"].handlers["o(+)"].default(rt, l, r);
-                return rt.types["pointer"].handlers["="].default(rt, l, r);
+                return rt.types["pointer"].handlers["o(=)"].default(rt, l, r);
             }
         },
         "o(-=)": {
             default(rt, l, r) {
                 r = rt.types["pointer_array"].handlers["o(-)"].default(rt, l, r);
-                return rt.types["pointer"].handlers["="].default(rt, l, r);
+                return rt.types["pointer"].handlers["o(=)"].default(rt, l, r);
             }
         },
         "o(++)": {

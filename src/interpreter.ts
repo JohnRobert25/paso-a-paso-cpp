@@ -1,4 +1,4 @@
-import { ArrayType, CIntType, CRuntime, Variable, VariableType } from "./rt";
+import { ArrayType, CIntType, CRuntime, Reference, Variable, VariableType } from "./rt";
 
 /*
  * decaffeinate suggestions:
@@ -54,6 +54,22 @@ function integerConstant(rt: CRuntime, digits: string, radix: 10 | 16 | 8 | 2, s
     ) || "unsigned long long";
     return rt.val(rt.primitiveType(typeName), value);
 }
+
+// auto x = 5; for (auto c : s): the type comes from the value
+function isAuto(rt: CRuntime, specifiers: string[]) {
+    return specifiers.includes("auto") && specifiers.every((t) => rt.config.specifiers.includes(t as any));
+}
+
+// int &a -> "ref", const string &s -> "const"
+function referenceKind(declarator: any, specifiers: string[]): Reference | undefined {
+    if (!declarator.Reference) {
+        return undefined;
+    }
+    return specifiers.includes("const") ? "const" : "ref";
+}
+
+// operators where "hola" + s or "abc" == s convert the left side to the class on the right
+const CONVERTING_OPERATORS = ["+", "==", "!=", "<", ">", "<=", ">="];
 
 export class Interpreter extends BaseInterpreter {
     visitors:{ [name: string]: (interp: Interpreter, s: any, param?: any) => any };
@@ -171,6 +187,7 @@ export class Interpreter extends BaseInterpreter {
             *ParameterTypeList(interp, s, param) {
                 const argTypes = [];
                 const argNames = [];
+                const argRefs: Reference[] = [];
                 const optionalArgs = [];
                 let i = 0;
                 while (i < s.ParameterList.length) {
@@ -239,10 +256,11 @@ export class Interpreter extends BaseInterpreter {
                         }
                         argTypes.push(_type);
                         argNames.push(_name);
+                        argRefs.push(_param.Declarator ? referenceKind(_param.Declarator.Declarator, _param.DeclarationSpecifiers) : undefined);
                     }
                     i++;
                 }
-                return {argTypes , argNames, optionalArgs};
+                return {argTypes , argNames, optionalArgs, argRefs};
             },
             *FunctionDefinition(interp, s, param) {
                 ({
@@ -268,17 +286,25 @@ export class Interpreter extends BaseInterpreter {
                 } else {
                     rt.raiseException("unacceptable argument list", s.Declarator.right);
                 }
-                const {argTypes , argNames, optionalArgs} = yield* interp.visit(interp, ptl, param);
+                const {argTypes , argNames, optionalArgs, argRefs} = yield* interp.visit(interp, ptl, param);
                 const stat = s.CompoundStatement;
-                rt.defFunc(scope, name, basetype, argTypes, argNames, stat, interp, optionalArgs);
+                rt.defFunc(scope, name, basetype, argTypes, argNames, stat, interp, optionalArgs, argRefs);
             },
             *Declaration(interp, s, param) {
                 ({
                     rt
                 } = interp);
-                const basetype = rt.simpleType(s.DeclarationSpecifiers);
-                for (const dec of s.InitDeclaratorList) {
+                const auto = isAuto(rt, s.DeclarationSpecifiers);
+                let basetype = auto ? null : rt.simpleType(s.DeclarationSpecifiers);
+                for (let dec of s.InitDeclaratorList) {
                     let init = dec.Initializers;
+                    if (auto) {
+                        if (init == null || init.type !== "Initializer_expr") {
+                            rt.raiseException("auto needs an initial value to know its type", dec);
+                        }
+                        init = { type: "Initializer_expr", shorthand: yield* interp.visit(interp, init.Expression, param) };
+                        basetype = init.shorthand.t;
+                    }
                     if ((dec.Declarator.right.length > 0) && (dec.Declarator.right[0].type === "DirectDeclarator_modifier_array")) {
                         const dimensions = [];
                         for (let j = 0; j < dec.Declarator.right.length; j++) {
@@ -318,16 +344,53 @@ export class Interpreter extends BaseInterpreter {
                         param.basetype = _basetype;
                         rt.defVar(name, init.t, init);
                     } else {
+                        const right = dec.Declarator.right;
+                        if (init == null && rt.isClassType(basetype) && right.length === 1
+                            && right[0].type === "DirectDeclarator_modifier_IdentifierList" && right[0].IdentifierList) {
+                            // string s(n, c) reads like an old C function declaration; it is an object
+                            init = {
+                                type: "Initializer_args",
+                                args: right[0].IdentifierList.map((id: string) => ({ type: "IdentifierExpression", Identifier: id }))
+                            };
+                            dec = { ...dec, Declarator: { ...dec.Declarator, right: [] } };
+                        }
                         const _basetype = param.basetype;
                         param.basetype = basetype;
                         const { name, type } = yield* interp.visit(interp, dec.Declarator, param);
                         param.basetype = _basetype;
                         if ((init == null)) {
+                            if (dec.Declarator.Reference) {
+                                rt.raiseException("reference " + name + " needs a variable to refer to", dec);
+                            }
                             init = rt.defaultValue(type, true);
+                        } else if ("shorthand" in init) {
+                            init = init.shorthand;
+                        } else if (init.type === "Initializer_args") {
+                            // string s(3, 'a');
+                            const args: Variable[] = [];
+                            for (const e of init.args) {
+                                args.push(yield* interp.visit(interp, e, param));
+                            }
+                            init = interp.construct(type, args, init);
+                        } else if (init.type === "Initializer_array") {
+                            // pair<int, string> p = {90, "Luis"};
+                            const args: Variable[] = [];
+                            for (const e of init.Initializers) {
+                                if (e.type !== "Initializer_expr") {
+                                    rt.raiseException("nested braces are not supported here", e);
+                                }
+                                args.push(yield* interp.visit(interp, e.Expression, param));
+                            }
+                            init = interp.construct(type, args, init);
                         } else {
                             init = yield* interp.visit(interp, init.Expression);
                         }
-                        rt.defVar(name, type, init);
+                        const kind = referenceKind(dec.Declarator, s.DeclarationSpecifiers);
+                        if (kind) {
+                            rt.defRef(name, type, init, kind);
+                        } else {
+                            rt.defVar(name, type, init);
+                        }
                     }
                 }
             },
@@ -578,6 +641,57 @@ export class Interpreter extends BaseInterpreter {
                 param.scope = scope_bak;
                 return return_val;
             },
+            // for (char c : s), for (int x : a), for (auto &p : v)
+            *IterationStatement_range(interp, s, param) {
+                let return_val;
+                ({
+                    rt
+                } = interp);
+                const scope_bak = param.scope;
+                param.scope = "IterationStatement_range";
+                rt.enterScope(param.scope);
+                const range: Variable = yield* interp.visit(interp, s.Expression, param);
+                let elements: Variable[];
+                let start = 0;
+                if (rt.isArrayType(range)) {
+                    elements = range.v.target;
+                    start = range.v.position;
+                } else if (rt.isClassType(range) && rt.types[rt.getTypeSignature(range.t)].elements) {
+                    elements = rt.types[rt.getTypeSignature(range.t)].elements(rt, range);
+                } else {
+                    rt.raiseException("cannot go through the elements of " + rt.makeTypeString(range.t) + " with for ( : )", s.Expression);
+                }
+                const auto = isAuto(rt, s.DeclarationSpecifiers);
+                const basetype = auto ? null : rt.simpleType(s.DeclarationSpecifiers);
+                const kind = referenceKind(s.Declarator, s.DeclarationSpecifiers);
+                // the elements are read as the loop goes, as with iterators
+                for (let i = start; i < elements.length; i++) {
+                    const element = elements[i];
+                    rt.enterScope("IterationStatement_range_element");
+                    const _basetype = param.basetype;
+                    param.basetype = auto ? element.t : basetype;
+                    const { name, type } = yield* interp.visit(interp, s.Declarator, param);
+                    param.basetype = _basetype;
+                    if (kind) {
+                        rt.defRef(name, type, element, kind);
+                    } else {
+                        rt.defVar(name, type, element);
+                    }
+                    const r = yield* interp.visit(interp, s.Statement, param);
+                    rt.exitScope("IterationStatement_range_element");
+                    if (r instanceof Array) {
+                        if (r[0] === "break") {
+                            break;
+                        } else if (r[0] === "return") {
+                            return_val = r;
+                            break;
+                        }
+                    }
+                }
+                rt.exitScope(param.scope);
+                param.scope = scope_bak;
+                return return_val;
+            },
             JumpStatement_goto(interp, s, param) {
                 ({
                     rt
@@ -615,6 +729,17 @@ export class Interpreter extends BaseInterpreter {
                 } = interp);
                 return rt.readVar(s.Identifier);
             },
+            *TemporaryObject(interp, s, param) {
+                ({
+                    rt
+                } = interp);
+                const type = rt.simpleType([s.TypeName]);
+                const args: Variable[] = [];
+                for (const e of s.args) {
+                    args.push(yield* interp.visit(interp, e, param));
+                }
+                return interp.construct(type, args, s);
+            },
             *ParenthesesExpression(interp, s, param) {
                 ({
                     rt
@@ -639,6 +764,14 @@ export class Interpreter extends BaseInterpreter {
                 ({
                     rt
                 } = interp);
+                if (s.Expression.type === "IdentifierExpression" && interp.isTypeName(s.Expression.Identifier)) {
+                    // string("pera"): a temporary object of that type
+                    const values: Variable[] = [];
+                    for (const e of s.args) {
+                        values.push(yield* interp.visit(interp, e, param));
+                    }
+                    return interp.construct(rt.simpleType([s.Expression.Identifier]), values, s);
+                }
                 const ret = yield* interp.visit(interp, s.Expression, param);
                 // console.log "==================="
                 // console.log "s: " + JSON.stringify(s)
@@ -821,8 +954,12 @@ export class Interpreter extends BaseInterpreter {
                     // console.log "s.left: " + JSON.stringify(s.left)
                     // console.log "s.right: " + JSON.stringify(s.right)
                     // console.log "==================="
-                    const left = yield* interp.visit(interp, s.left, param);
-                    const right = yield* interp.visit(interp, s.right, param);
+                    let left: Variable = yield* interp.visit(interp, s.left, param);
+                    const right: Variable = yield* interp.visit(interp, s.right, param);
+                    if (CONVERTING_OPERATORS.includes(op) && !rt.isClassType(left) && rt.isClassType(right.t)) {
+                        const convert = rt.types[rt.getTypeSignature(right.t)].convert;
+                        left = (convert && convert(rt, left)) || left;
+                    }
                     // console.log "==================="
                     // console.log "left: " + JSON.stringify(left)
                     // console.log "right: " + JSON.stringify(right)
@@ -1201,6 +1338,34 @@ export class Interpreter extends BaseInterpreter {
             ret.left = true;
             return ret;
         }
+    };
+
+    // string, or a typedef: a name that is a type and not a variable
+    isTypeName(name: string) {
+        const rt = this.rt;
+        if (rt.scope.some((scope) => scope.variables[name] != null)) {
+            return false;
+        }
+        return name in rt.typedefs || rt.getTypeSignature({ type: "class", name }) in rt.types;
+    };
+
+    // A library class built from a brace list or constructor arguments; with none, its default value
+    construct(type: VariableType, args: Variable[], node: any): Variable {
+        const rt = this.rt;
+        if (!rt.isClassType(type)) {
+            if (args.length === 1) {
+                return rt.cast(type, args[0]);
+            }
+            rt.raiseException("cannot initialize " + rt.makeTypeString(type) + " with " + args.length + " values", node);
+        }
+        if (args.length === 0) {
+            return rt.defaultValue(type);
+        }
+        const construct = rt.types[rt.getTypeSignature(type)].construct;
+        if (!construct) {
+            rt.raiseException("cannot initialize " + rt.makeTypeString(type) + " with " + args.length + " values", node);
+        }
+        return construct(rt, args);
     };
 
     arrayType(dimensions: number[], type: any): ArrayType {

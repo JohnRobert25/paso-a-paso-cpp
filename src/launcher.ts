@@ -18,6 +18,9 @@ const includes: { [fileName: string]: IncludeModule } = {
     cstdlib: require("./includes/cstdlib"),
     ctime: require("./includes/ctime"),
     iomanip: require("./includes/iomanip"),
+    string: require("./includes/string"),
+    utility: require("./includes/utility"),
+    algorithm: require("./includes/algorithm"),
     "bits/stdc++.h": require("./includes/bits_stdcpp"),
     foo: require("./includes/dummy_class_foo")
 };
@@ -29,7 +32,9 @@ const headerAlias: { [filename: string]: string } = {
     "math.h": "cmath",
     "stdio.h": "cstdio",
     "stdlib.h": "cstdlib",
-    "time.h": "ctime"
+    "time.h": "ctime",
+    // pair, greater and less are together in utility
+    functional: "utility"
 };
 
 for (const alias of Object.keys(headerAlias)) {

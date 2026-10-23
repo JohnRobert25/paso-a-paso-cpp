@@ -17,7 +17,7 @@ export = {
                 let j = dest.v.position;
                 let n = num.v;
                 while ((n > 0) && (i < srcarr.length) && (j < (destarr.length - 1)) && (srcarr[i].v !== 0)) {
-                    destarr[j] = rt.clone(srcarr[i]);
+                    destarr[j].v = rt.clone(srcarr[i]).v;
                     n--;
                     i++;
                     j++;
@@ -25,7 +25,7 @@ export = {
                 if (srcarr[i].v === 0) {
                     // padding zeroes
                     while ((n > 0) && (j < destarr.length)) {
-                        destarr[j++] = rt.val(rt.charTypeLiteral, 0);
+                        destarr[j++].v = rt.val(rt.charTypeLiteral, 0).v;
                     }
                 }
                 if (i === srcarr.length) {

@@ -1,7 +1,7 @@
 import { CRuntime } from "../rt";
 
 // #include <bits/stdc++.h>, common in contests: loads every standard library this interpreter has
-const STANDARD = ["iostream", "iomanip", "cmath", "cstdio", "cstdlib", "cstring", "cctype", "ctime", "climits", "string", "algorithm", "vector", "utility"];
+const STANDARD = ["iostream", "iomanip", "cmath", "cstdio", "cstdlib", "cstring", "cctype", "ctime", "climits", "string", "utility", "functional", "algorithm", "vector"];
 
 export = {
     load(rt: CRuntime) {

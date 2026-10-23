@@ -2,7 +2,7 @@
 import { ArrayVariable, CRuntime, IntVariable, Variable, VariableType } from "../rt";
 import { Cin, Cout } from "./shared/iomanip_types";
 import formatFloat = require("./shared/format_float");
-import loadSwap = require("./shared/swap");
+import { cells, isString, stringText, StringVariable } from "./shared/string_value";
 
 const _skipSpace = function (s: string) {
     const r = /^\s*/.exec(s);
@@ -27,6 +27,9 @@ export = {
         const {
             stdio
         } = rt.config;
+        // with g++, <iostream> also brings string, pair, min, max, swap and greater
+        rt.include("string");
+        rt.include("utility");
         const cinType = rt.newClass("istream", []);
 
         const cin = {
@@ -118,9 +121,9 @@ export = {
             }
 
             for (let i = 0, end = r.length, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
-                tar[i + initialPos] = rt.val(rt.charTypeLiteral, r.charCodeAt(i));
+                tar[i + initialPos].v = rt.val(rt.charTypeLiteral, r.charCodeAt(i)).v;
             }
-            tar[r.length + initialPos] = rt.val(rt.charTypeLiteral, 0);
+            tar[r.length + initialPos].v = rt.val(rt.charTypeLiteral, 0).v;
             return _cin;
         };
         rt.regOperator(_cinString, cin.t, ">>", [pchar], cin.t);
@@ -158,9 +161,9 @@ export = {
             }
 
             for (let i = 0, end = r.length, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
-                tar[i + initialPos] = rt.val(rt.charTypeLiteral, r.charCodeAt(i));
+                tar[i + initialPos].v = rt.val(rt.charTypeLiteral, r.charCodeAt(i)).v;
             }
-            tar[r.length + initialPos] = rt.val(rt.charTypeLiteral, 0);
+            tar[r.length + initialPos].v = rt.val(rt.charTypeLiteral, 0).v;
             return _cin;
         };
 
@@ -183,12 +186,64 @@ export = {
 
         rt.regFunc(_get, cin.t, "get", [], rt.intTypeLiteral);
 
+        // cin >> s: one word, up to a space or the end of the line
+        const stringType = rt.simpleType("string");
+        const _cinStdString = function (rt: CRuntime, _cin: Cin, s: StringVariable) {
+            if (!s.left) {
+                rt.raiseException("only left value can be used as storage");
+            }
+            const b = _skipSpace(_cin.v.buf);
+            _cin.v.eofbit = b.length === 0;
+            const word = /^\S*/.exec(b)[0];
+            _cin.v.failbit = word.length === 0;
+            if (!_cin.v.failbit) {
+                s.v.chars = cells(rt, word);
+            }
+            _cin.v.buf = b.substring(word.length);
+            return _cin;
+        };
+        rt.regOperator(_cinStdString, cin.t, ">>", [stringType], cin.t);
+
+        // getline(cin, s): the rest of the line, without the line break
+        const _getlineString = function (rt: CRuntime, _this: Variable, _cin: Cin, s: StringVariable, delimV?: IntVariable) {
+            if (!s.left) {
+                rt.raiseException("only left value can be used as storage");
+            }
+            const delim = delimV ? String.fromCharCode(delimV.v) : "\n";
+            const b = _cin.v.buf;
+            const end = b.indexOf(delim);
+            const line = end < 0 ? b : b.substring(0, end);
+            s.v.chars = cells(rt, line);
+            _cin.v.eofbit = end < 0;
+            _cin.v.failbit = b.length === 0;
+            _cin.v.buf = end < 0 ? "" : b.substring(end + 1);
+            return _cin;
+        };
+        rt.regFunc(_getlineString, "global", "getline", [cin.t, stringType], cin.t);
+        rt.regFunc(_getlineString, "global", "getline", [cin.t, stringType, rt.charTypeLiteral], cin.t);
+
+        // cin.ignore(): skips one character (the line break left by cin >> n), or up to n until delim
+        const _ignore = function (rt: CRuntime, _cin: Cin, nV?: IntVariable, delimV?: IntVariable) {
+            const b = _cin.v.buf;
+            const n = nV ? nV.v : 1;
+            let i = 0;
+            while (i < b.length && i < n) {
+                i++;
+                if (delimV && b.charCodeAt(i - 1) === delimV.v) {
+                    break;
+                }
+            }
+            _cin.v.buf = b.substring(i);
+            return _cin;
+        };
+        rt.regFunc(_ignore, cin.t, "ignore", [], cin.t);
+        rt.regFunc(_ignore, cin.t, "ignore", [rt.primitiveType("long long")], cin.t);
+        rt.regFunc(_ignore, cin.t, "ignore", [rt.primitiveType("long long"), rt.intTypeLiteral], cin.t);
+
         // Fast input in contests: ios::sync_with_stdio(false); cin.tie(nullptr / 0 / NULL).
         // There is nothing to speed up in the interpreter, so they do nothing.
         rt.regFunc((rt: CRuntime) => rt.val(rt.boolTypeLiteral, true), "global", "sync_with_stdio", ["?"], rt.boolTypeLiteral);
         rt.regFunc((rt: CRuntime) => rt.nullPointer, cin.t, "tie", ["?"], rt.voidPointerType);
-
-        loadSwap(rt);
 
         const _bool = (rt: CRuntime, _cin: Cin) => rt.val(rt.boolTypeLiteral, !_cin.v.failbit);
 
@@ -212,6 +267,10 @@ export = {
                 "o(<<)": {
                     default(rt, _cout: Cout, t: Variable) {
                         let r;
+                        if (isString(t)) {
+                            const text = stringText(t);
+                            t = rt.makeCharArrayFromString(text, /[^\x00-\x7f]/.test(text) ? "wchar_t" : "char");
+                        }
                         if (_cout.manipulators != null) {
                             t = _cout.manipulators.use(t);
                         }
@@ -223,7 +282,7 @@ export = {
                             } else if (rt.isFloatType(t)) {
                                 r = formatFloat(t.v);
                             } else {
-                                r = t.v.toString();
+                                r = rt.formatInteger(t.t, t.v as number);
                             }
                         } else if (rt.isStringType(t)) {
                             r = rt.getStringFromCharArray(t);
