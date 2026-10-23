@@ -52,7 +52,8 @@ function run(code: string, input: string, config: JSCPPConfig): Debugger | numbe
             }
         },
         includes: this.includes,
-        unsigned_overflow: "error"
+        // wrap around like g++ (0u - 1 == 4294967295), as signed integers do
+        unsigned_overflow: "ignore"
     };
     mergeConfig(_config, config);
     const rt = new CRuntime(_config);

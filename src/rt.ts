@@ -745,8 +745,9 @@ export class CRuntime {
             value = this.booleanToNumber(value);
             const limit = this.config.limits[type.name];
             const overflow = !((value <= limit.max) && (value >= limit.min));
+            const unsigned = this.isUnsignedType(type);
             if (errorMsg && overflow) {
-                if (this.isUnsignedType(type)) {
+                if (unsigned) {
                     if (this.config.unsigned_overflow === "error") {
                         this.raiseException(errorMsg);
                         return false;
@@ -756,6 +757,10 @@ export class CRuntime {
                     } else {
                         return true;
                     }
+                } else if (this.isIntegerType(type) && type.name !== "bool" && Number.isFinite(value)) {
+                    // signed overflow wraps around as with g++ (2000000000 + 2000000000 == -294967296);
+                    // the caller applies wrapInteger. NaN (an uninitialized variable) is still an error.
+                    return true;
                 } else {
                     this.raiseException(errorMsg);
                 }
@@ -774,9 +779,10 @@ export class CRuntime {
         }
     }
 
-    ensureUnsigned(type: VariableType, value: BasicValue) {
+    // Brings an integer back into its type's range modulo 2^bits, as two's complement does
+    wrapInteger(type: VariableType, value: BasicValue) {
         value = this.booleanToNumber(value);
-        if (this.isUnsignedType(type)) {
+        if (this.isIntegerType(type) && type.name !== "bool" && Number.isFinite(value)) {
             const limit = this.config.limits[type.name];
             const period = limit.max - limit.min + 1;
             if (value < limit.min) {
@@ -897,7 +903,7 @@ export class CRuntime {
                 if (!this.isNumericType(value)) {
                     this.raiseException("cannot cast " + this.makeValueString(value) + " to " + this.makeTypeString(type));
                 } else if (this.inrange(type, value.v, "overflow when casting " + this.makeTypeString(value.t) + " to " + this.makeTypeString(type))) {
-                    value.v = this.ensureUnsigned(type, value.v);
+                    value.v = this.wrapInteger(type, value.v);
                     return this.val(type, value.v);
                 }
             } else {
@@ -910,7 +916,7 @@ export class CRuntime {
                         const period = Math.pow(2, 8 * bytes);
                         let newValue = ((this.booleanToNumber(value.v) % period) + period) % period;
                         if (this.inrange(type, newValue, `cannot cast negative value ${newValue} to ` + this.makeTypeString(type))) {
-                            newValue = this.ensureUnsigned(type, newValue);
+                            newValue = this.wrapInteger(type, newValue);
                             // unsafe! bitwise truncation is platform dependent
                             return this.val(type, newValue);
                         }
@@ -921,12 +927,12 @@ export class CRuntime {
                 } else if (this.isFloatType(value)) {
                     v = value.v > 0 ? Math.floor(this.booleanToNumber(value.v)) : Math.ceil(this.booleanToNumber(value.v));
                     if (this.inrange(type, v, "overflow when casting " + this.makeValString(value) + " to " + this.makeTypeString(type))) {
-                        v = this.ensureUnsigned(type, v);
+                        v = this.wrapInteger(type, v);
                         return this.val(type, v);
                     }
                 } else {
                     if (this.inrange(type, value.v, "overflow when casting " + this.makeValString(value) + " to " + this.makeTypeString(type))) {
-                        value.v = this.ensureUnsigned(type, value.v);
+                        value.v = this.wrapInteger(type, value.v);
                         return this.val(type, value.v);
                     }
                 }
@@ -1033,7 +1039,7 @@ export class CRuntime {
             }
             if (checkRange) {
                 this.inrange(t, v as BasicValue, `overflow of ${this.makeValString({ t, v } as Variable)}`);
-                v = this.ensureUnsigned(t, v as BasicValue);
+                v = this.wrapInteger(t, v as BasicValue);
             }
         }
         if (left === undefined) {

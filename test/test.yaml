@@ -91,6 +91,8 @@
           out: "127\n"
         - 
           cpp: "8bit.cpp"
+          config:
+            unsigned_overflow: "error"
           exception: "6:3 overflow during post-increment 256\\(unsigned char\\)"
     unary: 
       after: 
@@ -303,6 +305,8 @@
       cases:
         -
           cpp: "overflow.cpp"
+          config:
+            unsigned_overflow: "error"
           exception: "5:5 overflow during post-decrement"
         -
           cpp: "overflow.cpp"

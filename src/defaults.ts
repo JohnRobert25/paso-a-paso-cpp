@@ -15,8 +15,9 @@ const config: JSCPPConfig = {
         "unsigned long long", "unsigned long long int", "bool"],
     limits: {
         "char": {
+            // signed, as with g++ on x86: (char)127 + 1 == -128
             max: 0x7f,
-            min: 0x00,
+            min: -0x80,
             bytes: 1
         },
         "signed char": {
@@ -208,6 +209,9 @@ const defaultOpHandler: OpHandlerMap = {
                 } else if (!rt.isNumericType(l)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support / on " + rt.makeTypeString(r.t));
                 } else {
+                    if (rt.isIntegerType(l.t) && rt.isIntegerType(r.t) && rt.booleanToNumber(r.v) === 0) {
+                        rt.raiseException("division by zero");
+                    }
                     let ret = rt.booleanToNumber(l.v) / rt.booleanToNumber(r.v);
                     if (rt.isIntegerType(l.t) && rt.isIntegerType(r.t)) {
                         // C++ truncates toward zero: -7 / 2 == -3
@@ -223,6 +227,8 @@ const defaultOpHandler: OpHandlerMap = {
             default(rt, l, r) {
                 if (!rt.isNumericType(r) || !rt.isIntegerType(l) || !rt.isIntegerType(r)) {
                     rt.raiseException(rt.makeTypeString(l.t) + " does not support % on " + rt.makeTypeString(r.t));
+                } else if (rt.booleanToNumber(r.v) === 0) {
+                    rt.raiseException("division by zero");
                 } else {
                     const ret = rt.booleanToNumber(l.v) % rt.booleanToNumber(r.v);
                     const rett = rt.promoteNumeric(l.t, r.t);
@@ -256,7 +262,7 @@ const defaultOpHandler: OpHandlerMap = {
                 if (r === undefined) {
                     // unary: integer promotion, and unsigned negation wraps (-0x80000000u == 2147483648)
                     rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
-                    return rt.val(rett, rt.ensureUnsigned(rett, -rt.booleanToNumber(l.v as BasicValue)));
+                    return rt.val(rett, rt.wrapInteger(rett, -rt.booleanToNumber(l.v as BasicValue)));
                 } else {
                     // binary
                     if (!rt.isNumericType(l) || !rt.isNumericType(r)) {
@@ -486,13 +492,13 @@ const defaultOpHandler: OpHandlerMap = {
                     const b = l.v;
                     l.v = rt.booleanToNumber(l.v) + 1;
                     if (rt.inrange(l.t, l.v, `overflow during post-increment ${rt.makeValString(l)}`)) {
-                        l.v = rt.ensureUnsigned(l.t, l.v);
+                        l.v = rt.wrapInteger(l.t, l.v);
                         return rt.val(l.t, b);
                     }
                 } else {
                     l.v = rt.booleanToNumber(l.v) + 1;
                     if (rt.inrange(l.t, l.v, `overflow during pre-increment ${rt.makeValString(l)}`)) {
-                        l.v = rt.ensureUnsigned(l.t, l.v);
+                        l.v = rt.wrapInteger(l.t, l.v);
                         return l;
                     }
                 }
@@ -509,14 +515,14 @@ const defaultOpHandler: OpHandlerMap = {
                     b = l.v;
                     l.v = rt.booleanToNumber(l.v) - 1;
                     if (rt.inrange(l.t, l.v, "overflow during post-decrement")) {
-                        l.v = rt.ensureUnsigned(l.t, l.v);
+                        l.v = rt.wrapInteger(l.t, l.v);
                         return rt.val(l.t, b);
                     }
                 } else {
                     l.v = rt.booleanToNumber(l.v) - 1;
                     b = l.v;
                     if (rt.inrange(l.t, l.v, "overflow during pre-decrement")) {
-                        l.v = rt.ensureUnsigned(l.t, l.v);
+                        l.v = rt.wrapInteger(l.t, l.v);
                         return l;
                     }
                 }
@@ -529,7 +535,7 @@ const defaultOpHandler: OpHandlerMap = {
                 }
                 // ~x == -x - 1 in two's complement, without JS's 32-bit truncation
                 const rett = rt.promoteNumeric(l.t, rt.intTypeLiteral);
-                const ret = rt.ensureUnsigned(rett, -rt.booleanToNumber(l.v as BasicValue) - 1);
+                const ret = rt.wrapInteger(rett, -rt.booleanToNumber(l.v as BasicValue) - 1);
                 return rt.val(rett, ret);
             }
         },

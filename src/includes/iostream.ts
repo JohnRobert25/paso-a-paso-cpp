@@ -63,7 +63,8 @@ export = {
                                 break;
                             case "short": case "short int": case "signed short": case "signed short int": case "unsigned short": case "unsigned short int": case "int": case "signed int": case "unsigned": case "unsigned int": case "long": case "long int": case "signed long": case "signed long int": case "unsigned long": case "unsigned long int": case "long long": case "long long int": case "signed long long": case "signed long long int": case "unsigned long long": case "unsigned long long int":
                                 b = _skipSpace(b);
-                                r = _read(rt, /^[-+]?(?:([0-9]*)([eE]\+?[0-9]+)?)|0/, b, t.t);
+                                // digits with an optional sign; an empty match sets failbit (end of input, a letter...)
+                                r = _read(rt, /^[-+]?[0-9]+|^/, b, t.t);
                                 v = parseInt(r[0], 10);
                                 const token: string = r[0];
                                 if (/^[-+]?[0-9]+$/.test(token)) {
@@ -72,7 +73,8 @@ export = {
                                 break;
                             case "float": case "double":
                                 b = _skipSpace(b);
-                                r = _read(rt, /^[-+]?(?:[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)|(?:([1-9][0-9]*)([eE]\+?[0-9]+)?)/, b, t.t);
+                                // 0, -3, 2.5, .5, 1e-3; anchored as a whole (the old pattern found numbers further ahead)
+                                r = _read(rt, /^[-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:[eE][-+]?[0-9]+)?|^/, b, t.t);
                                 v = parseFloat(r[0]);
                                 break;
                             case "bool":
