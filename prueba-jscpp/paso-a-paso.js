@@ -1,33 +1,62 @@
-// Prueba el depurador de JSCPP: imprime cada paso con su línea y las variables.
+// Corre un programa paso a paso con el depurador de JSCPP y muestra cada paso:
+// la línea, las variables de cada llamada y lo que se ha escrito.
 // Uso: node paso-a-paso.js programa.cpp [entrada.in] [maxPasos]
 const fs = require("fs");
 const JSCPP = require("..");
 
 const codigo = fs.readFileSync(process.argv[2], "utf8");
 const entrada = process.argv[3] ? fs.readFileSync(process.argv[3], "utf8") : "";
-const maxPasos = Number(process.argv[4] || 200);
-const lineas = codigo.split("\n");
+const maxPasos = Number(process.argv[4] || 500);
+const lineas = codigo.split(/\r?\n/);
 
 let salida = "";
 const dbg = JSCPP.run(codigo, entrada, {
   debug: true,
   stdio: { write: (s) => { salida += s; } },
 });
+// detenerse una vez por instrucción, no en cada parte de una expresión
+dbg.setStopConditions({ isStatement: true, positionChanged: true, lineChanged: false });
 
-function variables() {
-  const vars = dbg.variable();
-  return vars.map((v) => `${v.name}=${JSON.stringify(v.value)}`).join(" ");
+function valor(v) {
+  const texto = dbg.rt.makeValueString(v);
+  return texto === "NaN" ? "?" : texto;
+}
+
+// la pila de llamadas: main(x=6) > fact(n=3)
+function pila() {
+  const marcos = [];
+  for (const ambito of dbg.rt.scope) {
+    if (ambito.$name.startsWith("function ")) marcos.push({ nombre: ambito.$name.slice(9), vars: [] });
+    if (!marcos.length) continue;
+    for (const [nombre, v] of Object.entries(ambito.variables)) {
+      marcos[marcos.length - 1].vars.push(`${nombre}=${valor(v)}`);
+    }
+  }
+  return marcos.map((m) => `${m.nombre}(${m.vars.join(", ")})`).join(" > ");
 }
 
 let paso = 0;
+let escrito = 0;
 let fin = false;
-while (!fin && paso < maxPasos) {
-  const nodo = dbg.nextNode();
-  if (nodo) {
-    const pila = dbg.rt.scope.filter((s) => s.$name.includes("function")).map((s) => s.$name.replace(/^function /, "")).join(" > ");
-    console.log(`#${String(paso).padStart(3)} L${String(nodo.sLine).padStart(2)} | ${lineas[nodo.sLine - 1].trim().padEnd(40)} | ${variables()}  [${pila}]  salida=${JSON.stringify(salida)}`);
+let anterior = "";
+try {
+  while (!fin && paso < maxPasos) {
+    const nodo = dbg.nextNode();
+    // el depurador se detiene en varias partes de una misma línea; si nada cambió, es el mismo paso
+    const estado = nodo && `${nodo.sLine}|${pila()}`;
+    if (nodo && estado !== anterior) {
+      paso++;
+      console.log(`Paso ${String(paso).padStart(3)}  línea ${String(nodo.sLine).padStart(2)}:  ${lineas[nodo.sLine - 1].trim()}`);
+      console.log(`           ${pila()}`);
+      anterior = estado;
+    }
+    fin = dbg.next() !== false;
+    if (salida.length > escrito) {
+      console.log(`           escribe: ${JSON.stringify(salida.slice(escrito))}`);
+      escrito = salida.length;
+    }
   }
-  fin = dbg.next() !== false;
-  paso++;
+  console.log(fin ? `\nTerminó en ${paso} pasos. Salida completa:\n${salida}` : `\nSe cortó en ${maxPasos} pasos.`);
+} catch (e) {
+  console.log(`\nError: ${e.message}`);
 }
-console.log(fin ? `Terminó. Salida: ${JSON.stringify(salida)}` : `Cortado en ${maxPasos} pasos`);
