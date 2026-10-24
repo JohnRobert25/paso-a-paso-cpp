@@ -40,5 +40,6 @@ demo/*.js.map
 src/ast.js
 src/prepast.js
 prueba-jscpp/aislar/jscpp-navegador.js
-pagina/jscpp.js
+paquete/dist/
+pagina/paso-a-paso-lib.js
 prueba-jscpp/.cache-curso/

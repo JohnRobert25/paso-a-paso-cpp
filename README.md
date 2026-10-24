@@ -1,3 +1,27 @@
+# Paso a paso C++
+
+Fork de [JSCPP](https://github.com/felixhao28/JSCPP), de Felix Hao (licencia MIT, ver `LICENSE`), para ver un programa de C++ paso a paso, como Karel: la línea que sigue, las variables de cada llamada, la entrada que ya leyó `cin` y lo que escribió `cout`. Está pensado para principiantes de la Olimpiada Sinaloense de Informática.
+
+Cambios principales sobre JSCPP: los resultados dan lo mismo que g++ (división, desbordamiento, `double` con `cout`, globales en cero), `string`, `pair`, `sort` y `<algorithm>`, referencias (`int &a`), `for (char c : s)` y errores explicados en español.
+
+| Carpeta | Qué tiene |
+|---|---|
+| `src/`, `pegjs/` | El intérprete |
+| `paquete/` | Lo que va a la app: `pasos.js` (corre el programa y guarda cada paso), `mensajes.js` (errores en español) y el Worker |
+| `pagina/` | Página de prueba: abrir `paso-a-paso.html` en el navegador |
+| `test/`, `prueba-jscpp/` | Pruebas: las de JSCPP, casos comparados con g++ y los programas del curso |
+
+| Comando | Para qué |
+|---|---|
+| `npm run para-la-app` | Arma `paquete/dist/` (para la app) y `pagina/paso-a-paso-lib.js` (para la página de prueba) |
+| `npm test` | Pruebas de JSCPP |
+| `node prueba-jscpp/comparar.js` | Casos propios, comparados con g++ |
+| `node prueba-jscpp/curso.mts --pasos` | Todos los programas del curso, como los corre el paso a paso |
+
+A continuación, el README original de JSCPP.
+
+---
+
 # JSCPP
 
 This is a simple C++ interpreter written in JavaScript.

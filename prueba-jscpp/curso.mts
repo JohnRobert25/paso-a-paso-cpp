@@ -2,7 +2,10 @@
 // las soluciones de los problemas (con sus ejemplos), los programas de las lecciones y los de la Referencia.
 // Solo lee el contenido de la app; no cambia nada en ella.
 //
-//     node prueba-jscpp/curso.mts [carpeta de entrenamiento-osi-cpp]
+//     node prueba-jscpp/curso.mts [carpeta de entrenamiento-osi-cpp] [--pasos]
+//
+// Con --pasos corre cada programa como el paso a paso de la app (paquete/pasos.js, con sus límites)
+// y compara la salida del último paso.
 //
 // Deja el detalle en prueba-jscpp/resultados-curso.json.
 
@@ -14,14 +17,19 @@ import path from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
-const app = path.resolve(process.argv[2] || path.join(aqui, "..", "..", "..", "entrenamiento-osi-cpp"));
+const argumentos = process.argv.slice(2);
+const comoPasos = argumentos.includes("--pasos");
+const carpeta = argumentos.find((a) => a !== "--pasos");
+const app = path.resolve(carpeta || path.join(aqui, "..", "..", "..", "entrenamiento-osi-cpp"));
 const contenido = (archivo: string) => import(pathToFileURL(path.join(app, "src", "contenido", archivo)).href);
 
 const { CURSO } = await contenido("curso.ts");
 const { EJEMPLOS } = await contenido("ejemplos.ts");
 const { INSTRUCCIONES } = await contenido("instrucciones.ts");
 const { BLOQUES } = await contenido("bloques.ts");
-const JSCPP = createRequire(import.meta.url)("..");
+const requerir = createRequire(import.meta.url);
+const JSCPP = requerir("..");
+const { calcularPasos } = requerir("../paquete/pasos.js");
 
 type Prueba = { tema: string; nombre: string; codigo: string; entrada: string };
 const pruebas: Prueba[] = [];
@@ -61,6 +69,13 @@ function gpp(codigo: string, entrada: string) {
 }
 
 function jscpp(codigo: string, entrada: string) {
+  if (comoPasos) {
+    const r = calcularPasos(codigo, entrada);
+    if (r.tipo === "error") return { salida: "", error: r.texto };
+    const fin = r.pasos[r.pasos.length - 1];
+    if (fin.cortado) return { salida: fin.salida, error: `cortado: más de ${r.pasos.length - 1} pasos o del límite de operaciones` };
+    return { salida: fin.salida, error: fin.error || undefined };
+  }
   let salida = "";
   try {
     JSCPP.run(codigo, entrada, { stdio: { write: (s: string) => { salida += s; } }, maxTimeout: 10000 });
@@ -128,4 +143,4 @@ for (const [c, rs] of [...porCausa].sort((a, b) => b[1].length - a[1].length)) {
 const fallasGpp = resultados.filter((r) => r.estado === "g++ falla");
 if (fallasGpp.length) console.log(`\n${fallasGpp.length} programas no compilaron con g++ (no cuentan):`, fallasGpp.map((r) => r.nombre).join(", "));
 
-fs.writeFileSync(path.join(aqui, "resultados-curso.json"), JSON.stringify(resultados, null, 2));
+if (!comoPasos) fs.writeFileSync(path.join(aqui, "resultados-curso.json"), JSON.stringify(resultados, null, 2));

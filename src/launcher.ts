@@ -22,7 +22,6 @@ const includes: { [fileName: string]: IncludeModule } = {
     utility: require("./includes/utility"),
     algorithm: require("./includes/algorithm"),
     "bits/stdc++.h": require("./includes/bits_stdcpp"),
-    foo: require("./includes/dummy_class_foo")
 };
 
 const headerAlias: { [filename: string]: string } = {

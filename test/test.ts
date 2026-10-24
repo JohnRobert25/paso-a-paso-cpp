@@ -2,6 +2,8 @@ type Callback = (result: boolean) => void;
 import { strict as assert } from 'assert';
 import * as fs from "fs";
 import JSCPP from "../src/launcher";
+// the class Foo of the class_basics test exists only for the tests, not in the interpreter
+JSCPP.includes.foo = require("./dummy_class_foo");
 import * as chai from "chai";
 import * as yaml from "js-yaml";
 import * as Mocha from "mocha";

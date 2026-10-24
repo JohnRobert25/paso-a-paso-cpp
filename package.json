@@ -26,8 +26,9 @@
     "watch-other": "grunt watch",
     "watch": "npx concurrently 'npm:watch-*'",
     "test": "mocha --require ts-node/register test/test.ts test/test-debugger.ts --bail",
-    "pagina": "node node_modules/grunt-cli/bin/grunt clean peg copy ts && npx -y esbuild@0.24.0 pagina/entrada-navegador.js --bundle --minify --platform=browser --alias:util=./pagina/vacio-node.js --alias:stream=./pagina/vacio-node.js --outfile=pagina/jscpp.js",
-    "prepublish": "grunt build"
+    "pagina": "node paquete/armar.mjs",
+    "prepublish": "grunt build",
+    "para-la-app": "node paquete/armar.mjs"
   },
   "nyc": {
     "extension": [
@@ -66,6 +67,7 @@
     "babel-polyfill": "^6.26.0",
     "chai": "^4.3.0",
     "concurrently": "^5.3.0",
+    "esbuild": "0.24.0",
     "eslint": "^7.20.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",

@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import { CRuntime, FunctionPointerVariable, IntVariable, ObjectVariable, Variable } from "../rt";
+import { CRuntime, FunctionPointerVariable, IntVariable, ObjectVariable, Variable } from "../src/rt";
 
 export = {
     load(rt: CRuntime) {
