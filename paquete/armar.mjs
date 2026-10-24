@@ -28,8 +28,17 @@ const worker = await esbuild.build({
   alias: { util: vacio, stream: vacio },
   legalComments: "none",
 });
-const define = { CODIGO_WORKER: JSON.stringify(worker.outputFiles[0].text) };
-const comun = { entryPoints: [aqui("paquete/index.js")], bundle: true, minify: true, platform: "browser", target: "es2020", define };
+// La versión y el crédito van en el primer renglón del archivo: así, viendo la app, se sabe qué
+// versión del intérprete tiene. git describe dice el commit exacto si no está justo en una etiqueta.
+const { version } = JSON.parse(readFileSync(aqui("package.json"), "utf8"));
+let git = "";
+try {
+  git = execFileSync("git", ["describe", "--tags", "--always", "--dirty"], { cwd: raiz, encoding: "utf8" }).trim();
+} catch { /* sin git: solo la versión */ }
+const nombreVersion = git && git !== "v" + version ? `v${version} (git ${git})` : "v" + version;
+const banner = { js: `/*! paso-a-paso-cpp ${nombreVersion} · basado en JSCPP © 2015 Felix Hao · licencia MIT */` };
+const define = { CODIGO_WORKER: JSON.stringify(worker.outputFiles[0].text), VERSION_PAQUETE: JSON.stringify(nombreVersion) };
+const comun = { entryPoints: [aqui("paquete/index.js")], bundle: true, minify: true, platform: "browser", target: "es2020", define, banner };
 
 mkdirSync(aqui("paquete/dist"), { recursive: true });
 // la app: un módulo con export { prepararPasos }
@@ -41,5 +50,6 @@ await esbuild.build({ ...comun, format: "iife", globalName: "PasoAPaso", outfile
 
 const archivo = aqui("paquete/dist/paso-a-paso.js");
 const kb = (n) => Math.round(n / 1024) + " KB";
-console.log(`\npaquete/dist/paso-a-paso.js: ${kb(statSync(archivo).size)} (${kb(gzipSync(readFileSync(archivo)).length)} comprimido)`);
+console.log(`\npaso-a-paso-cpp ${nombreVersion}`);
+console.log(`paquete/dist/paso-a-paso.js: ${kb(statSync(archivo).size)} (${kb(gzipSync(readFileSync(archivo)).length)} comprimido)`);
 console.log("Para la app: copiar todo paquete/dist/ a src/lib/paso-a-paso/");

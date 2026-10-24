@@ -4,370 +4,370 @@
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 151
+    "ms": 175
   },
   {
     "nombre": "02_hola_bits",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 148
+    "ms": 172
   },
   {
     "nombre": "03_suma",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 156
+    "ms": 162
   },
   {
     "nombre": "04_long_long",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 155
+    "ms": 169
   },
   {
     "nombre": "05_div_mod",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 153
+    "ms": 180
   },
   {
     "nombre": "06_double_precision",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 154
+    "ms": 177
   },
   {
     "nombre": "07_double_sin_formato",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 160
+    "ms": 170
   },
   {
     "nombre": "08_char",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 154
+    "ms": 166
   },
   {
     "nombre": "09_bool_if",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 150
+    "ms": 167
   },
   {
     "nombre": "10_for_suma",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 148
+    "ms": 171
   },
   {
     "nombre": "11_while_digitos",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 152
+    "ms": 171
   },
   {
     "nombre": "12_do_while",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 149
+    "ms": 178
   },
   {
     "nombre": "13_overflow_int",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 151
+    "ms": 161
   },
   {
     "nombre": "14_triangulo",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 152
+    "ms": 168
   },
   {
     "nombre": "15_max_min_lectura",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 155
+    "ms": 180
   },
   {
     "nombre": "16_operadores",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 155
+    "ms": 178
   },
   {
     "nombre": "17_sin_return",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 153
+    "ms": 162
   },
   {
     "nombre": "18_break_continue",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 154
+    "ms": 172
   },
   {
     "nombre": "19_switch",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 165
+    "ms": 197
   },
   {
     "nombre": "20_arreglo",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 153
+    "ms": 186
   },
   {
     "nombre": "21_arreglo_global_maxn",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 274
+    "ms": 325
   },
   {
     "nombre": "22_matriz",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 153
+    "ms": 175
   },
   {
     "nombre": "23_string",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 160
+    "ms": 185
   },
   {
     "nombre": "24_getline",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 157
+    "ms": 169
   },
   {
     "nombre": "25_char_arreglo",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 154
+    "ms": 193
   },
   {
     "nombre": "26_funciones",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 162
+    "ms": 192
   },
   {
     "nombre": "27_recursion",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 314
+    "ms": 334
   },
   {
     "nombre": "28_arreglo_a_funcion",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 155
+    "ms": 200
   },
   {
     "nombre": "30_vector",
     "etapa": "despues",
     "estado": "error",
     "detalle": "2:1 cannot find library: vector",
-    "ms": 133
+    "ms": 152
   },
   {
     "nombre": "31_sort",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 168
+    "ms": 179
   },
   {
     "nombre": "32_max_min_swap",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 171
+    "ms": 220
   },
   {
     "nombre": "33_fast_io",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 147
+    "ms": 204
   },
   {
     "nombre": "34_typedef_define",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 157
+    "ms": 162
   },
   {
     "nombre": "35_scanf_printf",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 159
+    "ms": 162
   },
   {
     "nombre": "36_while_cin",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 148
+    "ms": 172
   },
   {
     "nombre": "37_struct",
     "etapa": "despues",
     "estado": "error",
     "detalle": "3:1 type struct Punto is not defined",
-    "ms": 152
+    "ms": 204
   },
   {
     "nombre": "38_range_for_auto",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 149
+    "ms": 171
   },
   {
     "nombre": "39_unsigned",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 148
+    "ms": 173
   },
   {
     "nombre": "40_division_negativos",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 157
+    "ms": 177
   },
   {
     "nombre": "41_double_formato",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 167
+    "ms": 199
   },
   {
     "nombre": "42_globales_en_cero",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 166
+    "ms": 188
   },
   {
     "nombre": "43_constantes_y_tipos",
     "etapa": "1",
     "estado": "igual",
     "detalle": "",
-    "ms": 164
+    "ms": 182
   },
   {
     "nombre": "44_bits",
     "etapa": "despues",
     "estado": "igual",
     "detalle": "",
-    "ms": 202
+    "ms": 203
   },
   {
     "nombre": "45_string_metodos",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 172
+    "ms": 207
   },
   {
     "nombre": "46_string_valor",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 195
+    "ms": 213
   },
   {
     "nombre": "47_referencias",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 160
+    "ms": 188
   },
   {
     "nombre": "48_pair_sort",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 193
+    "ms": 220
   },
   {
     "nombre": "49_sort_grande_inestable",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 273
+    "ms": 319
   },
   {
     "nombre": "50_algoritmos",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 178
+    "ms": 258
   },
   {
     "nombre": "51_getline_mezcla",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 162
+    "ms": 218
   },
   {
     "nombre": "52_range_for",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 154
+    "ms": 180
   },
   {
     "nombre": "53_npos_y_tamano",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 164
+    "ms": 200
   },
   {
     "nombre": "54_caracteres_en_string",
     "etapa": "2",
     "estado": "igual",
     "detalle": "",
-    "ms": 177
+    "ms": 203
   }
 ]

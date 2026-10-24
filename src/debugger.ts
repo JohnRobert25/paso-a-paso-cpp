@@ -36,6 +36,8 @@ export default class Debugger {
     gen: Generator<any, IntVariable | false, any>;
     // globals defined by the #included libraries (cin, cout, INT_MAX...), not by the program
     libraryGlobals: Set<string>;
+    // the parsed program, to know which statement a node belongs to
+    ast: any;
     constructor(src?: string, oldSrc?: string) {
         this.src = src || "";
         this.srcByLines = (oldSrc || src || "").split("\n");

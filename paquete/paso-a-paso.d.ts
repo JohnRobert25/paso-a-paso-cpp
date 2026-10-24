@@ -52,6 +52,9 @@ export interface Limites {
   maxOperaciones?: number;
 }
 
+/** La versión del intérprete: "v0.1.0", o con el commit si se armó fuera de una etiqueta. */
+export const VERSION: string;
+
 /** Calcula todos los pasos en un Worker, sin congelar la página. */
 export function prepararPasos(codigo: string, entrada: string, limites?: Limites): {
   resultado: Promise<Resultado>;

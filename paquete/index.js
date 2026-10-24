@@ -1,6 +1,9 @@
 // Lo que usa la app: prepararPasos corre el programa en un Worker (un hilo aparte) y regresa todos
 // los pasos de una vez. El código del Worker va dentro de este archivo (CODIGO_WORKER lo pone
 // armar.mjs), así que no hace falta configurar nada en la app ni servir otro archivo.
+// "v0.1.0", o con el commit si se armó fuera de una etiqueta: "v0.1.0 (git v0.1.0-2-gabc1234)"
+export const VERSION = VERSION_PAQUETE;
+
 let urlWorker = null;
 
 export function prepararPasos(codigo, entrada, limites = {}) {

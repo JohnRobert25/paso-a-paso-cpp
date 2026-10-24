@@ -74,6 +74,7 @@ function run(code: string, input: string, config: JSCPPConfig): Debugger | numbe
     if (result.error != null) {
         throw new Error("ERROR: Parsing Failure:\n" + PEGUtil.errorMessage(result.error, true));
     }
+    mydebugger.ast = result.ast;
     const interpreter = new Interpreter(rt);
     const defGen = interpreter.run(result.ast, code);
     while (true) {

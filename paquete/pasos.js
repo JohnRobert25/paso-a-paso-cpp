@@ -99,8 +99,9 @@ function aQuienSeRefiere(rt, objetivo, propio) {
   return null;
 }
 
-// Las variables vivas, agrupadas por llamada: globales, main, y cada función llamada
-function capturar(dbg) {
+// Las variables vivas, agrupadas por llamada: globales, main, y cada función llamada.
+// ocultar: nombres que no se muestran del ámbito más interno (los de una declaración que apenas empieza)
+function capturar(dbg, ocultar) {
   const rt = dbg.rt;
   const marcos = [];
   const globales = [];
@@ -118,6 +119,7 @@ function capturar(dbg) {
     if (!enFuncion) continue;
     const marco = marcos[marcos.length - 1];
     for (const [nombre, v] of Object.entries(ambito.variables)) {
+      if (ocultar && ambito === rt.scope[rt.scope.length - 1] && ocultar.includes(nombre)) continue;
       const ref = ambito.references && ambito.references[nombre]
         ? aQuienSeRefiere(rt, v, { ambito, nombre, funcion: marco.funcion }) : null;
       marco.vars.push({ nombre, valor: texto(v), ref });
@@ -127,6 +129,31 @@ function capturar(dbg) {
 }
 
 // ---------- Correr el programa y guardar cada paso ----------
+
+// Las declaraciones sueltas de un bloque (int n, ant = 0, racha = 0;). Cada una cuenta como un solo
+// paso: si no, habría un clic por variable sin salir de la línea. Las de un for se quedan como están.
+function declaraciones(ast) {
+  const r = [];
+  const recorrer = (nodo) => {
+    if (!nodo || typeof nodo !== "object") return;
+    if (Array.isArray(nodo)) { nodo.forEach(recorrer); return; }
+    if (nodo.type === "CompoundStatement") {
+      for (const d of nodo.Statements) if (d && d.type === "Declaration") r.push(d);
+    }
+    for (const v of Object.values(nodo)) if (v && typeof v === "object") recorrer(v);
+  };
+  recorrer(ast);
+  return r;
+}
+
+// int n, ant = 0 -> ["n", "ant"]
+function nombresDeclarados(declaracion) {
+  return declaracion.InitDeclaratorList.map((d) => {
+    let x = d.Declarator;
+    while (x && x.left && x.left.type !== "Identifier") x = x.left;
+    return x && x.left ? x.left.Identifier : null;
+  });
+}
 
 function calcularPasos(codigo, entrada, limites = {}) {
   const { maxPasos, maxOperaciones } = { ...LIMITES, ...limites };
@@ -146,21 +173,33 @@ function calcularPasos(codigo, entrada, limites = {}) {
     return cin && typeof cin.v.buf === "string" ? entrada.length - cin.v.buf.length : 0;
   };
 
+  const bloques = declaraciones(dbg.ast);
+  const enDeclaracion = (nodo) => bloques.find((d) => nodo.sOffset >= d.sOffset && nodo.eOffset <= d.eOffset) || null;
   const pasos = [];
   let anterior = "";
+  let declaracionAnterior = null;
+  let profundidadAnterior = 0;
   let operaciones = 0;
   const final = { linea: null, fin: false, error: null, cortado: false };
   try {
     while (true) {
       const nodo = dbg.nextNode();
-      if (nodo) {
-        const marcos = capturar(dbg);
+      const declaracion = nodo && enDeclaracion(nodo);
+      // dentro de la misma declaración no hay paso nuevo: el siguiente ya muestra todas sus variables
+      if (nodo && !(declaracion && declaracion === declaracionAnterior)) {
+        const profundidad = dbg.rt.scope.length;
+        // al empezar una declaración aún no se muestran sus variables (int n sin valor ya existe aquí);
+        // al regresar de una función llamada en ella (int a = doble(3)), sí
+        const empieza = declaracion && profundidad >= profundidadAnterior;
+        const marcos = capturar(dbg, empieza ? nombresDeclarados(declaracion) : null);
         const clave = nodo.sLine + "|" + JSON.stringify(marcos);
         if (clave !== anterior) {
           if (pasos.length >= maxPasos) { final.cortado = true; break; }
           pasos.push({ linea: nodo.sLine, marcos, salida, leido: leido() });
           anterior = clave;
         }
+        declaracionAnterior = declaracion;
+        profundidadAnterior = profundidad;
       }
       const r = dbg.next();
       if (r !== false) { final.fin = true; final.codigoSalida = r.v; break; }
